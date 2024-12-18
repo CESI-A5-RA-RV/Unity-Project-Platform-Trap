@@ -6,18 +6,24 @@ using UnityEngine.InputSystem;
 
 public class ThirdPersonController : MonoBehaviour
 {
-    //input fields
+    // Input fields
     private ThirdPersonActionsAsset playerActionsAsset;
     private InputAction move;
+    private InputAction run;
 
-    //movement fields
+    // Movement fields
     private Rigidbody rb;
     [SerializeField]
     private float movementForce = 1f;
     [SerializeField]
     private float jumpForce = 5f;
+
+    // Public variables for walk and run speeds
     [SerializeField]
-    private float maxSpeed = 5f;
+    public float walkSpeed = 5f;
+    [SerializeField]
+    public float runSpeed = 7.5f; // Speed for running
+    private float currentMaxSpeed;
     private Vector3 forceDirection = Vector3.zero;
 
     [SerializeField]
@@ -35,6 +41,7 @@ public class ThirdPersonController : MonoBehaviour
     {
         playerActionsAsset.Player.Jump.started += DoJump;
         move = playerActionsAsset.Player.Move;
+        run = playerActionsAsset.Player.Run;
         playerActionsAsset.Player.Enable();
     }
 
@@ -42,25 +49,6 @@ public class ThirdPersonController : MonoBehaviour
     {
         playerActionsAsset.Player.Jump.started -= DoJump;
         playerActionsAsset.Player.Disable();
-    }
-
-    private void FixedUpdate()
-    {
-        forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
-        forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
-
-        rb.AddForce(forceDirection, ForceMode.Impulse);
-        forceDirection = Vector3.zero;
-
-        if (rb.velocity.y < 0f)
-            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
-
-        Vector3 horizontalVelocity = rb.velocity;
-        horizontalVelocity.y = 0;
-        if (horizontalVelocity.sqrMagnitude > maxSpeed * maxSpeed)
-            rb.velocity = horizontalVelocity.normalized * maxSpeed + Vector3.up * rb.velocity.y;
-
-        LookAt();
     }
 
     private void LookAt()
@@ -93,6 +81,7 @@ public class ThirdPersonController : MonoBehaviour
         if (IsGrounded())
         {
             forceDirection += Vector3.up * jumpForce;
+            animator.SetBool("IsJumping", true); // Trigger the jump animation
         }
     }
 
@@ -104,4 +93,62 @@ public class ThirdPersonController : MonoBehaviour
         else
             return false;
     }
+
+    private void FixedUpdate()
+    {
+        // Update currentMaxSpeed based on run input
+        bool isRunning = run.ReadValue<float>() > 0.1f; // Check if Shift is held down
+        currentMaxSpeed = isRunning ? runSpeed : walkSpeed;
+
+        // Update the movement force direction
+        forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
+        forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
+
+        rb.AddForce(forceDirection, ForceMode.Impulse);
+        forceDirection = Vector3.zero;
+
+        // Adjust gravity and horizontal velocity
+        if (rb.velocity.y < 0f)
+            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+
+        Vector3 horizontalVelocity = rb.velocity;
+        horizontalVelocity.y = 0;
+        if (horizontalVelocity.sqrMagnitude > currentMaxSpeed * currentMaxSpeed)
+            rb.velocity = horizontalVelocity.normalized * currentMaxSpeed + Vector3.up * rb.velocity.y;
+
+        LookAt();
+
+        // Update animation parameters
+        UpdateAnimationParameters(horizontalVelocity.magnitude, isRunning); // Pass horizontal velocity magnitude and run status
+    }
+
+    private void UpdateAnimationParameters(float horizontalVelocityMagnitude, bool isRunning)
+    {
+        // Calculate speed as a normalized value between 0 and 1
+        float normalizedSpeed = horizontalVelocityMagnitude / currentMaxSpeed;
+
+        // If no movement (speed is very small), set the speed to 0
+        if (horizontalVelocityMagnitude < 0.1f)
+        {
+            normalizedSpeed = 0f;
+        }
+        else if (!isRunning) // Walking, use a speed range between 0.1 and 0.5
+        {
+            normalizedSpeed = Mathf.Clamp(normalizedSpeed, 0.1f, 0.5f);
+        }
+        else // Running, set to 1
+        {
+            normalizedSpeed = Mathf.Clamp(normalizedSpeed, 0.5f, 1f); // Adjust range for running
+        }
+
+        animator.SetFloat("speed", normalizedSpeed);
+
+        // Check if the player is grounded to reset the jump animation
+        if (IsGrounded())
+        {
+            animator.SetBool("IsJumping", false); // End the jump animation
+            animator.SetBool("IsGrounded", true); // End the jump animation
+        }
+    }
+
 }
