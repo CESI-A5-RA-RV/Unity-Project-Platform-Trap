@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   knockbackForce: 50
-  jumpForce: 10
+  jumpForce: 2
 --- !u!1 &4577318401420542330
 GameObject:
   m_ObjectHideFlags: 0

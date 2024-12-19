@@ -2,8 +2,15 @@ using UnityEngine;
 
 public class ProjectileCollision : MonoBehaviour
 {
-    [SerializeField] float knockbackForce = 30f;
-    [SerializeField] float jumpForce = 5f;
+    [SerializeField] float knockbackForce = 30f; // Total knockback force
+    [SerializeField] float maxVerticalKnockback = 5f; // Maximum allowed vertical force
+
+    private Rigidbody projectileRb; // To track the projectile's velocity
+
+    private void Awake()
+    {
+        projectileRb = GetComponent<Rigidbody>();
+    }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -13,16 +20,16 @@ public class ProjectileCollision : MonoBehaviour
 
             if (playerRb != null)
             {
-                // Calculate the knockback direction, ensuring it's mostly horizontal
-                Vector3 knockbackDirection = (collision.transform.position - transform.position).normalized;
-                knockbackDirection.y = 0; // Eliminate vertical contribution from direction
+                // Use the projectile's velocity as the base knockback direction
+                Vector3 knockbackDirection = projectileRb.velocity.normalized;
 
-                // Apply a small vertical jump force
-                playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                // Optional: Clamp the vertical component of the knockback direction
+                knockbackDirection.y = Mathf.Clamp(knockbackDirection.y, 0f, maxVerticalKnockback / knockbackForce);
 
-                // Apply horizontal knockback force
+                // Apply adjusted knockback force
                 playerRb.AddForce(knockbackDirection * knockbackForce, ForceMode.Impulse);
 
+                // Destroy the projectile
                 Destroy(gameObject);
             }
         }

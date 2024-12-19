@@ -296,6 +296,16 @@ PrefabInstance:
       propertyPath: maxSpeed
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: -2072181362204103692, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: jumpForce
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -2072181362204103692, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 461994417757304996, guid: 66441cd18f4db1642934a457b6c6cb63,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -490,6 +500,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.000000018631273
+      objectReference: {fileID: 0}
+    - target: {fileID: 8385354067147012511, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552413666658934080, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1907737867}
+    - target: {fileID: 8552413666658934080, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1907737867}
+    - target: {fileID: 8552413666658934080, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1907737867}
+    - target: {fileID: 8552413666658934080, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ThirdPersonController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552413666658934080, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ThirdPersonController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552413666658934080, guid: 66441cd18f4db1642934a457b6c6cb63,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ThirdPersonController, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -818,6 +863,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 862f2254c6b22f44ea78b97c0c43bab8, type: 3}
+--- !u!114 &1907737867 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -2072181362204103692, guid: 66441cd18f4db1642934a457b6c6cb63,
+    type: 3}
+  m_PrefabInstance: {fileID: 174528320}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e9830ef6db649e44a33359aed0534df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
