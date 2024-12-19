@@ -30,6 +30,10 @@ public class ThirdPersonController : MonoBehaviour
     private Camera playerCamera;
     private Animator animator;
 
+    // New fields for jumping and grounded state
+    private bool isJumping;
+    private bool isGrounded;
+
     private void Awake()
     {
         rb = this.GetComponent<Rigidbody>();
@@ -78,10 +82,12 @@ public class ThirdPersonController : MonoBehaviour
 
     private void DoJump(InputAction.CallbackContext obj)
     {
-        if (IsGrounded())
+        if (isGrounded) // Only jump if grounded
         {
-            forceDirection += Vector3.up * jumpForce;
-            animator.SetBool("IsJumping", true); // Trigger the jump animation
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Apply jump force
+            animator.SetBool("IsJumping", true);
+            animator.SetBool("IsGrounded", false);
+            isJumping = true; // Set jumping state
         }
     }
 
@@ -142,13 +148,40 @@ public class ThirdPersonController : MonoBehaviour
         }
 
         animator.SetFloat("speed", normalizedSpeed);
+    }
 
-        // Check if the player is grounded to reset the jump animation
-        if (IsGrounded())
+    private void UpdateVerticalAnimations()
+    {
+        Debug.Log($"Grounded: {isGrounded}, VelocityY: {rb.velocity.y}");
+
+        isGrounded = IsGrounded(); // Check grounded state
+
+        if (isGrounded)
         {
-            animator.SetBool("IsJumping", false); // End the jump animation
-            animator.SetBool("IsGrounded", true); // End the jump animation
+            animator.SetBool("IsGrounded", true);
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("IsFalling", false);
+            isJumping = false;
+        }
+        else
+        {
+            animator.SetBool("IsGrounded", false);
+
+            if (rb.velocity.y < -0.1f) // Falling
+            {
+                animator.SetBool("IsFalling", true);
+                animator.SetBool("IsJumping", false);
+            }
         }
     }
 
+    private void Update()
+    {
+        UpdateVerticalAnimations();
+
+        // Handle walking and running animations
+        float horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude;
+        bool isRunning = run.ReadValue<float>() > 0.1f;
+        UpdateAnimationParameters(horizontalVelocity, isRunning);
+    }
 }
