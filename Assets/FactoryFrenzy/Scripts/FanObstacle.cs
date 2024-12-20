@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class FanObstacle : MonoBehaviour
 {
-    [SerializeField]
-    private float pushForce = 100f; // Force applied to players
+    [SerializeField] private float pushForce = 100f; // Force applied to players
     // [SerializeField]
     // private ParticleSystem windEffect; // Assign the wind particle system in the Inspector
-    [SerializeField]
-    private Transform windDirection; // Transform indicating the direction of the wind
+    [SerializeField] private Transform windDirection; // Transform indicating the direction of the wind
 
     private void OnTriggerStay(Collider other)
     {
