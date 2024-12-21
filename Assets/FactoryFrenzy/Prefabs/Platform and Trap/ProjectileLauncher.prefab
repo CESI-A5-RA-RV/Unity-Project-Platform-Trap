@@ -5022,7 +5022,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4722236510932744}
-  - component: {fileID: 8544388609807837938}
+  - component: {fileID: 2165400262455645402}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -5046,7 +5046,7 @@ Transform:
   - {fileID: 4597034265451690}
   m_Father: {fileID: 4595654756050798}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8544388609807837938
+--- !u!114 &2165400262455645402
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5062,7 +5062,8 @@ MonoBehaviour:
   rotationSpeed: 35
   shootingForce: 20
   shootingAxis: {fileID: 4703932692914808}
-  projectile: {fileID: 1627521441993660, guid: 60ebd4e3f99b49341a28aefc833e6f7f, type: 3}
+  projectile: {fileID: 485967158947623891, guid: 729c947e27147174ead4af091e7c3c2c,
+    type: 3}
   projectileSpeed: 40
   cooldownTime: 1
   shootParticles: {fileID: 198190432169522098}
@@ -5076,6 +5077,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4595654756050798}
   - component: {fileID: 4043189666675930889}
+  - component: {fileID: 4808983690705616463}
   m_Layer: 0
   m_Name: ProjectileLauncher
   m_TagString: Untagged
@@ -5121,6 +5123,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4, y: 2.9, z: 5}
   m_Center: {x: 0, y: 1.15, z: 1.01}
+--- !u!114 &4808983690705616463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875090778556656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db9280dd917e55c42bcf4917e04361fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1931211189434318
 GameObject:
   m_ObjectHideFlags: 0
