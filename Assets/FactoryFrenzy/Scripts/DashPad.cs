@@ -15,7 +15,6 @@ public class DashPad : MonoBehaviour
         if(collider.gameObject.CompareTag("Player")){
             Vector3 dashDirection = transform.forward;
            
-
             Rigidbody player = collider.gameObject.GetComponent<Rigidbody>();
 
             if(player != null){
@@ -32,7 +31,6 @@ public class DashPad : MonoBehaviour
         if(collider.gameObject.CompareTag("Player")){
             Vector3 dashDirection = transform.forward;
             
-
             Rigidbody player = collider.gameObject.GetComponent<Rigidbody>();
 
             if(player != null){

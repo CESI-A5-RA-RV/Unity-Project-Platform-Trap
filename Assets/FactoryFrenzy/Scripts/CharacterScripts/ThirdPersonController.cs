@@ -28,6 +28,8 @@ public class ThirdPersonController : MonoBehaviour
     private Camera playerCamera;
     private Animator animator;
 
+    private bool canMove = true;
+
     // Grounded state
     private bool isGrounded;
 
@@ -75,8 +77,18 @@ public class ThirdPersonController : MonoBehaviour
         return Physics.Raycast(ray, out _, 0.3f);
     }
 
+    public void EnableMovement(){
+        canMove = true;
+        //Debug.Log("Player Free");
+    }
+
+    public void DisableMovement(){
+        canMove = false;
+        //Debug.Log("Player Trapped");
+    }
+
     private void FixedUpdate()
-    {
+    {   if(canMove){
         // Check grounded state
         isGrounded = IsGrounded();
 
@@ -115,6 +127,8 @@ public class ThirdPersonController : MonoBehaviour
 
         // Update animations
         UpdateAnimationParameters(horizontalVelocity.magnitude, isRunningInput);
+    }
+        
     }
 
     private void LookAt()
