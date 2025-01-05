@@ -31,6 +31,8 @@ public class CharacterControllerTest : MonoBehaviour
     // Grounded state
     private bool isGrounded;
 
+    private bool canMove = true;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -78,9 +80,20 @@ public class CharacterControllerTest : MonoBehaviour
         return Physics.Raycast(ray, out _, 0.3f);
     }
 
+    public void EnableMovement(){
+        canMove = true;
+        Debug.Log("Player Free");
+    }
+
+    public void DisableMovement(){
+        canMove = false;
+        Debug.Log("Player Trapped");
+    }
+
     private void FixedUpdate()
     {
-        // Check grounded state
+        if(canMove){
+            // Check grounded state
         isGrounded = IsGrounded();
 
         // Update speed based on running input
@@ -118,6 +131,7 @@ public class CharacterControllerTest : MonoBehaviour
 
         // Update animations
         UpdateAnimationParameters(horizontalVelocity.magnitude, isRunningInput);
+        }
     }
 
     private void LookAt()
