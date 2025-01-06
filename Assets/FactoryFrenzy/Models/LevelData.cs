@@ -44,7 +44,3 @@ public class Parameter
     public string key;
     public float value;
 }
-
-public class Class1
-{
-}
