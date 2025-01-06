@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelLoader : MonoBehaviour
 {
+    [SerializeField] public int selectedLevelId;
     [SerializeField] private List<LevelElement> elementPrefabs;
     private Dictionary<string, LevelElement> prefabDictionary;
 
@@ -16,12 +17,23 @@ public class LevelLoader : MonoBehaviour
         }
 
         string homeDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
-        string desktopPath = System.IO.Path.Combine(homeDirectory, "Desktop", "levels.json");
+        string desktopPath = System.IO.Path.Combine(homeDirectory, "Desktop", "levelsV2.json");
 
         string json = System.IO.File.ReadAllText(desktopPath);
 
-        LevelData levelData = JsonUtility.FromJson<LevelData>(json);
-        LoadLevel(levelData);   
+        MultiLevelData multiLevelData = JsonUtility.FromJson<MultiLevelData>(json);
+
+        LevelData selectedLevel = multiLevelData.levels.Find(level => level.id == selectedLevelId); // Example: Load level with ID 1
+
+        if (selectedLevel != null)
+        {
+            Debug.Log($"Loading Level: {selectedLevel.levelName}");
+            LoadLevel(selectedLevel);
+        }
+        else
+        {
+            Debug.LogWarning("Level not found!");
+        }
     }
 
     private void LoadLevel(LevelData levelData)

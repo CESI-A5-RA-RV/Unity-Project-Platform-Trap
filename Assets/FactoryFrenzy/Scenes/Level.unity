@@ -218,6 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 774888cdfae8ded45bed1b3b47ac49ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedLevelId: 1
   elementPrefabs:
   - {fileID: 4808983690705616463, guid: 8db423ad4b6c982478af642cd7af93e7, type: 3}
 --- !u!4 &423238843
@@ -834,9 +835,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelData:
+    id: 0
     levelName: 
     elements:
-    - elementType: 
+    - id: 0
+      elementType: 
       position:
         x: 0
         y: 0
