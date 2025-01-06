@@ -79,16 +79,14 @@ public class ThirdPersonController : MonoBehaviour
 
     public void EnableMovement(){
         canMove = true;
-        //Debug.Log("Player Free");
     }
 
     public void DisableMovement(){
         canMove = false;
-        //Debug.Log("Player Trapped");
     }
 
     private void FixedUpdate()
-    {   if(canMove){
+    {   if(canMove && !PauseMenu.isPaused){
         // Check grounded state
         isGrounded = IsGrounded();
 
