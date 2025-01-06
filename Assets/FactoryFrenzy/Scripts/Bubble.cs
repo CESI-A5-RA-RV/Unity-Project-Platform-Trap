@@ -13,22 +13,20 @@ public class Bubble : MonoBehaviour
 
             Rigidbody player = collider.gameObject.GetComponent<Rigidbody>();
             ThirdPersonController playerMove = collider.GetComponent<ThirdPersonController>();
-            CharacterControllerTest playerMoveTest = collider.GetComponent<CharacterControllerTest>();
             if(playerMove != null){
-                StartCoroutine(StopPlayer(player, playerMove, playerMoveTest, collider.transform)); 
+                StartCoroutine(StopPlayer(player, playerMove,  collider.transform)); 
             }
         }
     }
 
-    private IEnumerator StopPlayer(Rigidbody rbPlayer, ThirdPersonController player, CharacterControllerTest playerTest, Transform playerPosition)
+    private IEnumerator StopPlayer(Rigidbody rbPlayer, ThirdPersonController player,  Transform playerPosition)
     {
         playerTrapped = true;
 
         // Stop the player's velocity
         rbPlayer.velocity *= 0f;
         player.DisableMovement();
-        playerTest.DisableMovement();
-
+    
         playerPosition.position = transform.position;
         
         // Wait for the bubble to pop
@@ -36,7 +34,6 @@ public class Bubble : MonoBehaviour
 
         // Return the player's velocity to the original speed
         player.EnableMovement();
-        playerTest.EnableMovement();
         playerTrapped = false;
         
     }
