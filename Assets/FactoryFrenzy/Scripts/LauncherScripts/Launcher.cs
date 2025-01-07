@@ -142,6 +142,14 @@ public class Launcher : MonoBehaviour
         return closestPlayer;
     }
 
+    public void InitializeLauncher(float detectionRadius, float rotationSpeed, float shootingForce)
+    {
+        this.detectionRadius = detectionRadius;
+        this.rotationDirection = rotationSpeed;
+        this.shootingForce = shootingForce;
+
+    }
+
     void OnDrawGizmos()
     {
         // Visualize detection radius

@@ -15,7 +15,7 @@ public class ThirdPersonController : MonoBehaviour
     [SerializeField]
     private float movementForce = 1f;
     [SerializeField]
-    private float jumpForce = 8f;
+    private float jumpForce = 5f;
 
     [SerializeField]
     public float walkSpeed = 5f;
@@ -84,19 +84,11 @@ public class ThirdPersonController : MonoBehaviour
         currentMaxSpeed = isRunningInput ? runSpeed : walkSpeed;
 
         // Movement direction
-        if (movementInput.sqrMagnitude > 0.1f)
-        {
-            forceDirection += movementInput.x * GetCameraRight() * movementForce;
-            forceDirection += movementInput.y * GetCameraForward() * movementForce;
+        forceDirection += movementInput.x * GetCameraRight() * movementForce;
+        forceDirection += movementInput.y * GetCameraForward() * movementForce;
 
-            rb.AddForce(forceDirection, ForceMode.Impulse);
-            forceDirection = Vector3.zero;
-        }
-        else
-        {
-            // Decelerate the character when no input is given
-            rb.velocity = new Vector3(rb.velocity.x * 0.9f, rb.velocity.y, rb.velocity.z * 0.9f);
-        }
+        rb.AddForce(forceDirection, ForceMode.Impulse);
+        forceDirection = Vector3.zero;
 
         // Jumping
         if (isJumpingInput)
@@ -124,7 +116,6 @@ public class ThirdPersonController : MonoBehaviour
         // Update animations
         UpdateAnimationParameters(horizontalVelocity.magnitude, isRunningInput);
     }
-
 
     private void LookAt()
     {

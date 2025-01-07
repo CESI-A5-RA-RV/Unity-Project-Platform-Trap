@@ -48,7 +48,14 @@ MonoBehaviour:
   ShowAbsolutePosition: 0
   guiScale: 1.6
   checkPointCount: 0
-  checkPoints: []
+  checkPoints:
+  - cpc: {fileID: 0}
+    isActive: 0
+    position: {x: 0, y: 0, z: 0}
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    direction: 0
   selectedIndices: 
   entityMode: 1
   activationMode: 0
