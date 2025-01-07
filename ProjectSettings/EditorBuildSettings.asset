@@ -5,15 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: 383fbaf504e2ddd4fb226832bce3001e
+    path: Assets/FactoryFrenzy/Scenes/MainMenu.unity
+    guid: 3e718e28bb35db447b24e08d98ae1096
   - enabled: 1
-    path: Assets/Scenes/TestScene.unity
-    guid: 3ef754891b7bcd641918615b6e189271
+    path: Assets/FactoryFrenzy/Scenes/TrapTest.unity
+    guid: 4bda8c05d2b904b4283ef27d9d7acbb2
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: ce93a9cfc2728f34bbe4066c5f62c87c,
       type: 2}

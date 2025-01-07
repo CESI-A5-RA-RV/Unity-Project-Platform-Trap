@@ -26,7 +26,7 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame(){
         HomeLayout.SetActive(false);
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("TrapTest");
     }
 
     public void OnSettings(){
