@@ -31,7 +31,7 @@ public class ThirdPersonController : MonoBehaviour
     private bool canMove = true;
 
     // Grounded state
-    private bool isGrounded;
+    public bool isGrounded;
 
     private void Awake()
     {
