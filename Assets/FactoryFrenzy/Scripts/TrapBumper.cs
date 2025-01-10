@@ -20,7 +20,7 @@ public class TrapBumper : MonoBehaviour
                 finalForce *= bounceMultiplier;
                 
             }
-            Debug.Log(finalForce);
+        
             player.AddForce(bounceDirection * finalForce, ForceMode.Impulse);
         }
     }

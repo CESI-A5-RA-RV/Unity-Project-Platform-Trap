@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ThirdPersonController : MonoBehaviour
+public class ThirdPersonController : NetworkBehaviour
 {
     // Input fields
     private Vector2 movementInput;
@@ -86,7 +87,10 @@ public class ThirdPersonController : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {   if(canMove && !PauseMenu.isPaused){
+    {   
+        if(!IsOwner) return;
+        
+        if(canMove && !PauseMenu.isPaused){
         // Check grounded state
         isGrounded = IsGrounded();
 
@@ -126,7 +130,7 @@ public class ThirdPersonController : MonoBehaviour
         // Update animations
         UpdateAnimationParameters(horizontalVelocity.magnitude, isRunningInput);
     }
-        
+
     }
 
     private void LookAt()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -43,8 +44,9 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void GoToMainMenu(){
-        SceneManager.LoadScene("MainMenu");
         isPaused = false;
+        SceneManager.LoadScene("MainMenu");
+       
     }
 
     public void QuitGame(){
@@ -55,5 +57,13 @@ public class PauseMenu : MonoBehaviour
         if (cinemachineCamera != null){
             cinemachineCamera.enabled = isEnabled;
         } 
+    }
+
+    public void ChangeScene(){
+        isPaused = false;
+        if(NetworkManager.Singleton.IsHost){
+            NetworkManager.Singleton.SceneManager.LoadScene("AvatarTest", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+        
     }
 }
