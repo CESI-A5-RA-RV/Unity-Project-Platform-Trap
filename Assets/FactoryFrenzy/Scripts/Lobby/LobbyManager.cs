@@ -30,6 +30,7 @@ public class LobbyManager : MonoBehaviour
         UpdatePlayerList();
         string Name = PlayerPrefs.GetString("Lobby Name", "Aucune Donnée");
         NameLobby.text = Name;
+        
     }
 
     public void UpdatePlayerList()
@@ -103,7 +104,8 @@ public class LobbyManager : MonoBehaviour
 
     public void OnLaunch()
     {
-        
+        //if (lobby_master = true){code_initial} else {button non interactable}
+        //lobby_master == true if uid match 
         isCountingDown = true;
         StartTimer();
         gameObject.GetComponent<UnityEngine.UI.Button>().interactable = false;
