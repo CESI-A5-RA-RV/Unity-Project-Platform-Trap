@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ThirdPersonController : MonoBehaviour
+public class ThirdPersonController : NetworkBehaviour
 {
     // Input fields
     private Vector2 movementInput;
@@ -28,8 +29,10 @@ public class ThirdPersonController : MonoBehaviour
     private Camera playerCamera;
     private Animator animator;
 
+    private bool canMove = true;
+
     // Grounded state
-    private bool isGrounded;
+    public bool isGrounded;
 
     private void Awake()
     {
@@ -75,8 +78,19 @@ public class ThirdPersonController : MonoBehaviour
         return Physics.Raycast(ray, out _, 0.3f);
     }
 
+    public void EnableMovement(){
+        canMove = true;
+    }
+
+    public void DisableMovement(){
+        canMove = false;
+    }
+
     private void FixedUpdate()
-    {
+    {   
+        if(!IsOwner) return;
+        
+        if(canMove && !PauseMenu.isPaused){
         // Check grounded state
         isGrounded = IsGrounded();
 
@@ -115,6 +129,8 @@ public class ThirdPersonController : MonoBehaviour
 
         // Update animations
         UpdateAnimationParameters(horizontalVelocity.magnitude, isRunningInput);
+    }
+
     }
 
     private void LookAt()

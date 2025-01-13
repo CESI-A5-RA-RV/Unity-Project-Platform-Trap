@@ -42,7 +42,11 @@
     },
     "com.unity.collections": {
       "version": "1.2.4",
+<<<<<<< HEAD
       "depth": 1,
+=======
+      "depth": 2,
+>>>>>>> origin/lucas
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.6.6",
@@ -99,6 +103,7 @@
       "url": "https://packages.unity.com"
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
     "com.unity.multiplayer.tools": {
       "version": "1.1.1",
       "depth": 0,
@@ -112,6 +117,8 @@
       },
       "url": "https://packages.unity.com"
     },
+=======
+>>>>>>> origin/lucas
     "com.unity.netcode.gameobjects": {
       "version": "1.11.0",
       "depth": 0,
@@ -129,6 +136,7 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+<<<<<<< HEAD
 =======
 >>>>>>> 69ff21f2857cc0cecc556a0bfe34018ab3f52b19
     "com.unity.nuget.newtonsoft-json": {
@@ -148,6 +156,8 @@
     },
 =======
 >>>>>>> 69ff21f2857cc0cecc556a0bfe34018ab3f52b19
+=======
+>>>>>>> origin/lucas
     "com.unity.recorder": {
       "version": "4.0.3",
       "depth": 0,

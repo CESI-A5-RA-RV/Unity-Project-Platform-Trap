@@ -7,7 +7,10 @@
     "com.unity.ide.visualstudio": "2.0.22",
     "com.unity.ide.vscode": "1.2.5",
     "com.unity.inputsystem": "1.11.2",
+<<<<<<< HEAD
     "com.unity.multiplayer.tools": "1.1.1",
+=======
+>>>>>>> origin/lucas
     "com.unity.netcode.gameobjects": "1.11.0",
     "com.unity.recorder": "4.0.3",
     "com.unity.render-pipelines.universal": "14.0.11",
