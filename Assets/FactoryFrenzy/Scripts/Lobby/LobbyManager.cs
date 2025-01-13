@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ public class LobbyManager : MonoBehaviour
     public GameObject playerItemPrefab;
     public Transform contentParent;
     public Text nbPlayersText;
+    public TMP_Text NameLobby;
 
     private List<string> playerNames = new List<string>();
 
@@ -18,6 +20,8 @@ public class LobbyManager : MonoBehaviour
         playerNames.Add("Priscilla");
         playerNames.Add("Lola");
         UpdatePlayerList();
+        string Name = PlayerPrefs.GetString("Lobby Name", "Aucune Donnée");
+        NameLobby.text = Name;
     }
 
     public void UpdatePlayerList()
