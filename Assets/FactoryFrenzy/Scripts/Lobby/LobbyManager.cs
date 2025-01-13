@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour
@@ -10,8 +11,15 @@ public class LobbyManager : MonoBehaviour
     public Transform contentParent;
     public Text nbPlayersText;
     public TMP_Text NameLobby;
+    public TMP_Text Timer;
 
     private List<string> playerNames = new List<string>();
+
+    public int duration = 15;
+    public int timeRemaining;
+    public bool isCountingDown = false;
+
+
 
     
     void Start()
@@ -65,5 +73,39 @@ public class LobbyManager : MonoBehaviour
         {
             nbPlayersText.text = $"Players : {playerNames.Count}";
         }
+    }
+
+    public void StartTimer()
+    {
+        if(isCountingDown)
+        {
+            isCountingDown = true;
+            timeRemaining = duration;
+            Invoke("_tick",1f) ;
+        }
+    }
+
+
+    private void _tick ()
+    {
+        timeRemaining--;
+        Timer.text = timeRemaining.ToString();
+        if(timeRemaining>0)
+        {
+            Invoke("_tick", 1f);
+        }
+        else
+        {
+            isCountingDown = false;
+            SceneManager.LoadSceneAsync("TrapTest");
+        }
+    }
+
+    public void OnLaunch()
+    {
+        
+        isCountingDown = true;
+        StartTimer();
+        gameObject.GetComponent<UnityEngine.UI.Button>().interactable = false;
     }
 }
