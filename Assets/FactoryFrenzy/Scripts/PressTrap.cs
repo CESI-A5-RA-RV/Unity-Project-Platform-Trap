@@ -16,7 +16,11 @@ public class PressTrap : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            killPlayer.Kill(other);
+            Rigidbody rbPLayer = other.gameObject.GetComponent<Rigidbody>();
+            if(rbPLayer.transform.position.y < trapBottom.transform.position.y){
+                killPlayer.Kill(other);
+            }
+            
         }
     }
 
