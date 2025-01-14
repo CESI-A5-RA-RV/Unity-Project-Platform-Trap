@@ -561,16 +561,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 637816188406266966, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 637816188406266966, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1162904665299127775, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -579,26 +569,6 @@ PrefabInstance:
     - target: {fileID: 1162904665299127775, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2207610727624555963, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2207610727624555963, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2207610727624555963, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2207610727624555963, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2403960359065454837, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
@@ -706,16 +676,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 736402531}
-    - target: {fileID: 6693066271044396143, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6693066271044396143, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8029928390700044157, guid: 9d34fdd8c70355b469c4cc8298e94ea6,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
