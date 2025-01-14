@@ -9,31 +9,33 @@ public class EndLevel : MonoBehaviour
     [SerializeField] private GameObject Victory_TMP;
     [SerializeField] private GameObject countdownMenu;
 
+    ThirdPersonController player;
+    Rigidbody rbPlayer;
+
     private List<string> playerRanking = new List<string>();
     private int countdownStart = 60;
     private string display;
-    Deathzone deathzone;
-    KillPlayer killPlayer;
     void Start(){
         countdownMenu.SetActive(false);
-        deathzone = GameObject.Find("Deathzone").GetComponent<Deathzone>();
-        killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
     }
 
     private void OnTriggerEnter(Collider other){
         if(other.gameObject.CompareTag("Player")){
-            deathzone.respawnPositions = gameObject.transform.position;
-            killPlayer.lastCheckpoint = gameObject.transform.position;
+            player = other.gameObject.GetComponent<ThirdPersonController>();
+            rbPlayer = other.gameObject.GetComponent<Rigidbody>();
+            PlayerData playerData = other.gameObject.GetComponent<PlayerData>();
+            addPlayer(playerData.Username.Value);
             StartCoroutine(startCelebrate());
         }
     }
 
     private IEnumerator startCelebrate(){
+        rbPlayer.velocity = Vector3.zero;
+        player.DisableMovement();
         countdownMenu.SetActive(true);
         yield return new WaitForSeconds(3f);
         Victory_TMP.SetActive(false);
         int countdown = countdownStart;
-
         while (countdown >= 0){
             display = countdown.ToString();
             Countdown_TMP.text = display;
@@ -47,5 +49,6 @@ public class EndLevel : MonoBehaviour
 
     private void addPlayer(string name){
         playerRanking.Add(name);
+        Debug.Log(playerRanking);
     }
 }
