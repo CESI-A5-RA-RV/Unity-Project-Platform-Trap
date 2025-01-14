@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: c74ae3e7c4ef7a14f93f9e8a625255fc
+=======
+guid: a31ea7d0315594440839cdb0db6bc411
+>>>>>>> parent of 3227ca4 (build test 1)
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

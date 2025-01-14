@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 0b0e36037223b1f47a72b73a69d95186
+=======
+guid: a041d83486c20b84bbf5077ddfbbca37
+>>>>>>> parent of 3227ca4 (build test 1)
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
