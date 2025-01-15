@@ -7,9 +7,11 @@ public class Bumper : MonoBehaviour
 {
     [SerializeField] float bounceForce;
     private Animator animator;
+    private AudioSource audioSource;
 
     private void Start(){
         animator = GetComponentInParent<Animator>();
+        audioSource = GetComponentInParent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider collider){
@@ -21,6 +23,7 @@ public class Bumper : MonoBehaviour
 
             if(player != null){
                 animator.SetTrigger("ActivateBumper");
+                audioSource.Play();
                 player.AddForce(bounceDirection * bounceForce, ForceMode.Impulse);
             }
         }

@@ -7,26 +7,14 @@ using TMPro;
 public class HostGame : MonoBehaviour
 {
     public GameObject menu;
-    [SerializeField] TMP_Text usernameText;
 
     void Start(){
         menu.SetActive(true);
     }
     public void StartHost(){
         if(NetworkManager.Singleton != null){
-            // string username = usernameText.text;
-
-            // if(string.IsNullOrWhiteSpace(username)){
-            //     Debug.Log("Username cannot be empty");
-            //     return;
-            // }
-
-            // PlayerPrefs.SetString("Username", username);
-            
             menu.SetActive(false);
             NetworkManager.Singleton.StartHost();
-
-            
         }
         else{
             Debug.LogError("NetworkManager not found");
@@ -34,19 +22,8 @@ public class HostGame : MonoBehaviour
     }
     public void StartClient(){
         if(NetworkManager.Singleton != null){
-            // string username = usernameText.text;
-
-            // if(string.IsNullOrWhiteSpace(username)){
-            //     Debug.Log("Username cannot be empty");
-            //     return;
-            // }
-
-            // PlayerPrefs.SetString("Username", username);
-            
             menu.SetActive(false);
             NetworkManager.Singleton.StartClient();
-
-            
         }
         else{
             Debug.LogError("NetworkManager not found");

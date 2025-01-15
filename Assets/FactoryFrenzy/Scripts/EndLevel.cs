@@ -23,8 +23,6 @@ public class EndLevel : MonoBehaviour
         if(other.gameObject.CompareTag("Player")){
             player = other.gameObject.GetComponent<ThirdPersonController>();
             rbPlayer = other.gameObject.GetComponent<Rigidbody>();
-            PlayerData playerData = other.gameObject.GetComponent<PlayerData>();
-            addPlayer(playerData.Username.Value);
             StartCoroutine(startCelebrate());
         }
     }

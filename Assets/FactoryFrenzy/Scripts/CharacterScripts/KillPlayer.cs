@@ -5,13 +5,11 @@ using UnityEngine;
 public class KillPlayer : MonoBehaviour
 {
     public Vector3 lastCheckpoint;
-    private bool isPlayerDead = false;
     private GameObject player;
     private Rigidbody rbPlayer;
     // Start is called before the first frame update
     public void Kill(Collider other)
     {
-                isPlayerDead = true;
                 // get player that entered the zone
                 player = other.gameObject;
                 rbPlayer = player.GetComponent<Rigidbody>();
@@ -27,7 +25,6 @@ public class KillPlayer : MonoBehaviour
     private void RespawnPlayer()
     {
         player.transform.position = lastCheckpoint;
-        isPlayerDead = false;
         rbPlayer.isKinematic = false;
     }
 }

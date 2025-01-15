@@ -11,12 +11,12 @@ public class Bubble : MonoBehaviour
     public float respawnDelay = 4f;
     private bool playerTrapped = false;
 
-    private bool isActive = true;
-
     private BubbleSpawner spawner;
+    AudioSource audioSource;
 
     private void Start(){
         spawner = FindObjectOfType<BubbleSpawner>();
+        audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider collider){
@@ -25,6 +25,7 @@ public class Bubble : MonoBehaviour
             Rigidbody player = collider.gameObject.GetComponent<Rigidbody>();
             ThirdPersonController playerMove = collider.GetComponent<ThirdPersonController>();
             if(playerMove != null){
+                audioSource.Play();
                 StartCoroutine(StopPlayer(player, playerMove,  collider.transform)); 
             }
         }
@@ -33,7 +34,6 @@ public class Bubble : MonoBehaviour
     private IEnumerator StopPlayer(Rigidbody rbPlayer, ThirdPersonController player,  Transform playerPosition)
     {
         playerTrapped = true;
-        isActive = false;
         // Stop the player's velocity
         rbPlayer.velocity *= 0f;
         player.DisableMovement();

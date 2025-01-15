@@ -6,6 +6,11 @@ public class TrapBumper : MonoBehaviour
 {
     [SerializeField] float bounceForce;
     [SerializeField] float bounceMultiplier;
+    private AudioSource audioSource;
+
+    private void Start(){
+        audioSource = GetComponentInParent<AudioSource>();
+    }
 
     private void OnCollisionEnter(Collision collision){
         if(collision.gameObject.CompareTag("Player")){
@@ -20,7 +25,7 @@ public class TrapBumper : MonoBehaviour
                 finalForce *= bounceMultiplier;
                 
             }
-        
+            audioSource.Play();
             player.AddForce(bounceDirection * finalForce, ForceMode.Impulse);
         }
     }
