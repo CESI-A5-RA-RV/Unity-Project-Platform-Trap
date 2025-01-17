@@ -24,16 +24,23 @@ public class LobbyManager : MonoBehaviour
         }
         Debug.Log("Unity Services Initialized");
         try{
+            await relayManager.StartHostWithRelay();
+            PlayerPrefs.SetString("Relay Code", relayManager.GetRelayJoinCode());
+            PlayerPrefs.Save();
+
             CreateLobbyOptions options = new CreateLobbyOptions();
             options.IsPrivate = true;
+            options.Data = new Dictionary<string, DataObject>(){
+                {"relayJoinCode", new DataObject(
+                    visibility: DataObject.VisibilityOptions.Member,
+                    value : relayManager.GetRelayJoinCode()
+                )},
+            };
+
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName.text.ToString(), 10, options);
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
 
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
-            PlayerPrefs.Save();
-
-            await relayManager.StartHostWithRelay();
-            PlayerPrefs.SetString("Relay Code", relayManager.GetRelayJoinCode());
             PlayerPrefs.Save();
 
             if(NetworkManager.Singleton.SceneManager != null){
@@ -43,8 +50,6 @@ public class LobbyManager : MonoBehaviour
                 Debug.Log("Network Manager is empty");
             }
             
-            
-;
         }catch(Exception e){
             Debug.LogError(e);
         }
@@ -59,8 +64,8 @@ public class LobbyManager : MonoBehaviour
         try{
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
-
-            await relayClient.StartClientWithHost(relayManager.GetRelayJoinCode());
+            string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
+            await relayClient.StartClientWithHost(relayJoinCode);
 
             NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
             
@@ -84,4 +89,5 @@ public class LobbyManager : MonoBehaviour
         Debug.Log(lobbyCode.text.ToString());
         JoinLobby(lobbyCode.text.ToString());
     }
+
 }
