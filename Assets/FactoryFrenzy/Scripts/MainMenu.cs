@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Diagnostics;
 
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private GameObject HomeLayout;
     [SerializeField] private GameObject SettingsLayout;
     [SerializeField] private GameObject QuitLayout;
+    [SerializeField] private GameObject LobbyLayout;
     [SerializeField] private TMP_Text Version_TMP;
     private  static GameObject _previousLayout;
     private static GameObject _currentLayout;
@@ -19,14 +21,14 @@ public class MainMenu : MonoBehaviour
         HomeLayout.SetActive(true);
         SettingsLayout.SetActive(false);
         QuitLayout.SetActive(false);
+        LobbyLayout.SetActive(false);
 
         _currentLayout = HomeLayout;
         Version_TMP.text = "V."+ Application.version;
     }
 
     public void PlayGame(){
-        HomeLayout.SetActive(false);
-        SceneManager.LoadScene("TrapTest");
+        SwitchLayout(LobbyLayout);
     }
 
     public void OnSettings(){

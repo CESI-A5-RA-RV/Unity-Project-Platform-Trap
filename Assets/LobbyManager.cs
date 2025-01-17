@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -12,6 +13,10 @@ using UnityEngine.SceneManagement;
 public class LobbyManager : MonoBehaviour
 {
     public TMP_Text lobbyCode;
+    public TMP_Text lobbyName;
+
+    public RelayManager relayManager;
+    public RelayClient relayClient;
     public async void createLobby(){
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
@@ -21,16 +26,27 @@ public class LobbyManager : MonoBehaviour
         try{
             CreateLobbyOptions options = new CreateLobbyOptions();
             options.IsPrivate = true;
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync("LobbyName", 10, options);
-            Debug.Log($"Lobby created with ID: {lobby.LobbyCode}");
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName.text.ToString(), 10, options);
+            Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
 
-            PlayerPrefs.SetString("LobbyID", lobby.LobbyCode);
+            PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
             PlayerPrefs.Save();
 
-            SceneManager.LoadScene("LobbyEmpty");
+            await relayManager.StartHostWithRelay();
+            PlayerPrefs.SetString("Relay Code", relayManager.GetRelayJoinCode());
+            PlayerPrefs.Save();
 
+            if(NetworkManager.Singleton.SceneManager != null){
+                NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+            }
+            else{
+                Debug.Log("Network Manager is empty");
+            }
+            
+            
+;
         }catch(Exception e){
-            Debug.LogError(e.Message);
+            Debug.LogError(e);
         }
     }
 
@@ -43,10 +59,18 @@ public class LobbyManager : MonoBehaviour
         try{
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
-            SceneManager.LoadScene("LobbyEmpty");
+
+            await relayClient.StartClientWithHost(relayManager.GetRelayJoinCode());
+
+            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+            
         }catch(LobbyServiceException e){
             Debug.Log(e.Message);
         }
+    }
+
+    public void OnPlayerJoined(Lobby lobby){
+    //     NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Additive);
     }
 
     private string CleanLobbyCode(string lobbyCode)

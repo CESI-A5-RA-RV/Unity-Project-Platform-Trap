@@ -20,7 +20,7 @@ public class RelayClient : MonoBehaviour
     public void OnInputFieldValueChanged(string inputText){
         code = inputText;
     }
-    public async Task StartClientWithHost(string joinCode){
+    public async Task<bool> StartClientWithHost(string joinCode){
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -30,11 +30,11 @@ public class RelayClient : MonoBehaviour
             joinCode = CleanLobbyCode(joinCode);
             var joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode : joinCode);
             Debug.Log($"Joined relay session with allocation ID: {joinAllocation.AllocationId}");
-            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(joinAllocation, "dtls"));
-            
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(joinAllocation, "dtls"));
+            return !string.IsNullOrEmpty(joinCode) && NetworkManager.Singleton.StartClient();
         }catch(Exception e){
             Debug.LogError($"Error joining relay session: {e.Message}");
-            
+            return false;
         }
         
     }

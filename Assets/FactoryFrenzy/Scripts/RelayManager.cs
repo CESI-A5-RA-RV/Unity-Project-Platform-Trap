@@ -15,7 +15,7 @@ public class RelayManager : MonoBehaviour
     private Allocation allocation;
     private string relayJoinCode;
     // Start is called before the first frame update
-    public async Task StartHostWithRelay()
+    public async Task<string> StartHostWithRelay(int maxConnections=10)
     {
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
@@ -24,17 +24,18 @@ public class RelayManager : MonoBehaviour
         Debug.Log("Unity Services Initialized");
 
         try{
-            allocation = await RelayService.Instance.CreateAllocationAsync(1);
-            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "dtls"));
+            allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "dtls"));
             relayJoinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
             Debug.Log($"Relay Allocation created: {allocation.AllocationId}");
             Debug.Log($"Join Code: {relayJoinCode}");
-            
+
+            return NetworkManager.Singleton.StartHost() ? relayJoinCode : null ;
 
         }catch(Exception e){
             Debug.LogError($"Error creating relay allocation: {e.Message}");
-            
+            return null;
         }
     }
 
