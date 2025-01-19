@@ -17,6 +17,24 @@ public class LobbyManager : MonoBehaviour
 
     public RelayManager relayManager;
     public RelayClient relayClient;
+
+    private void Start(){
+        if(NetworkManager.Singleton != null){
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        }
+    }
+
+    private void OnDestroy(){
+        if(NetworkManager.Singleton != null){
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+    }
+
+    private void OnClientConnected(ulong clientId){
+        if(NetworkManager.Singleton.IsHost){
+            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+        }
+    }
     public async void createLobby(){
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
@@ -66,8 +84,7 @@ public class LobbyManager : MonoBehaviour
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
             string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
             await relayClient.StartClientWithHost(relayJoinCode);
-
-            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+            
             
         }catch(LobbyServiceException e){
             Debug.Log(e.Message);
