@@ -6,37 +6,42 @@ using UnityEngine.SceneManagement;
 
 public class PlayerSpawn : NetworkBehaviour
 {
-    
+    GameObject startLine;
+
     void Start(){
-        if(IsServer){
-            SpawnAllPlayers();
-        }
+        startLine = GameObject.FindGameObjectWithTag("Start");
+    }
+    
+    public void AssignSpawnPositions(){
+       int playerIndex = 0;
+
+       foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds){
+        Vector3 spawnPosition = GetSpawnPosition(playerIndex);
+        AssignSpawnPositionToPlayer(clientId, spawnPosition);
+        playerIndex++;
+       }
     }
 
-    // void OnEnable(){
-    //     SceneManager.sceneLoaded += OnSceneLoaded;
-    // }
-    // void OnDisable(){
-    //     SceneManager.sceneLoaded -= OnSceneLoaded;
-    // }
-
-    // private void OnSceneLoaded(Scene scene, LoadSceneMode mode){
-    //     if(NetworkManager.Singleton.IsHost){
-    //         SpawnAllPlayers();
-    //     }
-    // }
-
-    private void SpawnAllPlayers(){
-        GameObject startPlatform = GameObject.FindWithTag("Start");
-        
-        foreach (var player in NetworkManager.Singleton.ConnectedClients){
-            SpawnClient(player.Value.PlayerObject, startPlatform);
-        }
+    private Vector3 GetSpawnPosition(int index){
+        //Range between startLine x
+        return startLine.transform.position;
     }
 
-    private void SpawnClient(NetworkObject playerObject, GameObject startLine){
-        if(playerObject.IsOwner){
-            playerObject.transform.position = startLine.transform.position;
+    private void AssignSpawnPositionToPlayer(ulong clientId, Vector3 position){
+        var clientParams = new ClientRpcParams{
+            Send = new ClientRpcSendParams{
+                TargetClientIds = new[] {clientId}
+            }
+        };
+
+        SpawnClientRpc(position, clientParams);
+    }
+
+
+    [ClientRpc]
+    private void SpawnClientRpc(Vector3 position, ClientRpcParams clientRpcParams = default){
+        if(IsOwner){
+            transform.position = position;
         }
     }
 }

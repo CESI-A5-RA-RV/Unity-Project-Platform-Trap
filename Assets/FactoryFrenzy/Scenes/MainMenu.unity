@@ -1392,7 +1392,6 @@ GameObject:
   - component: {fileID: 736402537}
   - component: {fileID: 736402535}
   - component: {fileID: 736402536}
-  - component: {fileID: 736402538}
   m_Layer: 0
   m_Name: MenuManager
   m_TagString: Menu
@@ -1472,7 +1471,6 @@ MonoBehaviour:
   lobbyName: {fileID: 1223533248}
   relayManager: {fileID: 736402533}
   relayClient: {fileID: 736402534}
-  lobbySceneManagement: {fileID: 736402538}
 --- !u!114 &736402536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1506,18 +1504,6 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
---- !u!114 &736402538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 736402530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c9caf66d351c114fac12c7e21f09333, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &806243029 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4659335345598647978, guid: 3992469c9223b6d4792a67381cbac91f,
