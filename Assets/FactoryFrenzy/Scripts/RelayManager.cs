@@ -30,8 +30,7 @@ public class RelayManager : MonoBehaviour
 
             Debug.Log($"Relay Allocation created: {allocation.AllocationId}");
             Debug.Log($"Relay Join Code: {relayJoinCode}");
-            Debug.Log(allocation.RelayServer.IpV4);
-            Debug.Log(allocation.RelayServer.Port);
+            
             return NetworkManager.Singleton.StartHost() ? relayJoinCode : null ;
 
         }catch(RelayServiceException e){

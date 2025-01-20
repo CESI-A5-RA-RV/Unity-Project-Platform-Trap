@@ -24,6 +24,13 @@ public class LobbyManager : MonoBehaviour
         if(NetworkManager.Singleton != null){
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnServerStopped += OnHostStopped;
+            NetworkManager.Singleton.OnClientDisconnectCallback += clientId =>
+            {
+                if (clientId == NetworkManager.Singleton.LocalClientId)
+                {
+                Debug.LogWarning("Client disconnected from the host.");
+                }
+            };
         }
     }
 
@@ -39,7 +46,13 @@ public class LobbyManager : MonoBehaviour
             Debug.Log($"New Player {clientId} joined the lobby");
             NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
         }
+
+        if(clientId == NetworkManager.Singleton.LocalClientId){
+            Debug.Log("Client successfully connected to the host.");
+        }
     }
+
+    
 
     private void OnHostStopped(bool state){
         if(NetworkManager.Singleton.IsHost){
