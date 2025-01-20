@@ -19,8 +19,6 @@ public class LobbyManager : MonoBehaviour
     public RelayManager relayManager;
     public RelayClient relayClient;
 
-    public LobbySceneManagement lobbySceneManagement;
-
     private Lobby lobby;
 
     private void Start(){
@@ -37,7 +35,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private void OnDisable(){
+    private void OnDestroy(){
         if(NetworkManager.Singleton != null){
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.Singleton.OnServerStopped -= OnHostStopped;
@@ -109,7 +107,6 @@ public class LobbyManager : MonoBehaviour
                 Debug.Log($"Found relayJoinCode: {relayJoinCode}");
                 await relayClient.StartClientWithHost(relayJoinCode);
             
-                //lobbySceneManagement.RequestChangeSceneServerRpc();
             }
             else
             {
