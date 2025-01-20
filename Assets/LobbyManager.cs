@@ -117,8 +117,15 @@ public class LobbyManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void RequestChangeSceneServerRpc(){
+        Debug.Log("Changing scenes");
+        NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+        NotifyClientsSceneChangedClientRpc();
+    }
+
+    [ClientRpc]
+    public void NotifyClientsSceneChangedClientRpc(){
         NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
     }
 
