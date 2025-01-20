@@ -25,11 +25,11 @@ public class RelayManager : MonoBehaviour
 
         try{
             allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "dtls"));
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "udp"));
             relayJoinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
             Debug.Log($"Relay Allocation created: {allocation.AllocationId}");
-            Debug.Log($"Join Code: {relayJoinCode}");
+            Debug.Log($"Relay Join Code: {relayJoinCode}");
 
             return NetworkManager.Singleton.StartHost() ? relayJoinCode : null ;
 

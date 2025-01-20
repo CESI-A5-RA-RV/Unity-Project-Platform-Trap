@@ -30,7 +30,7 @@ public class RelayClient : MonoBehaviour
             joinCode = CleanLobbyCode(joinCode);
             var joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode : joinCode);
             Debug.Log($"Joined relay session with allocation ID: {joinAllocation.AllocationId}");
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(joinAllocation, "dtls"));
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(joinAllocation, "udp"));
             return !string.IsNullOrEmpty(joinCode) && NetworkManager.Singleton.StartClient();
         }catch(Exception e){
             Debug.LogError($"Error joining relay session: {e.Message}");

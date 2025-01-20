@@ -65,12 +65,12 @@ public class LobbyManager : MonoBehaviour
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
             PlayerPrefs.Save();
 
-            if(NetworkManager.Singleton.SceneManager != null){
-                NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
-            }
-            else{
-                Debug.Log("Network Manager is empty");
-            }
+            // if(NetworkManager.Singleton.SceneManager != null){
+            //     NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+            // }
+            // else{
+            //     Debug.Log("Network Manager is empty");
+            // }
             
         }catch(Exception e){
             Debug.LogError(e);
