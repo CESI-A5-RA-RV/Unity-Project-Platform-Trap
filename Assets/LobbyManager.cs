@@ -12,6 +12,8 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour
 {
+    //Pas oublier de mettre un heartbeat pour le lobby
+
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
 
@@ -32,6 +34,7 @@ public class LobbyManager : MonoBehaviour
 
     private void OnClientConnected(ulong clientId){
         if(NetworkManager.Singleton.IsHost){
+            Debug.Log($"New Player {clientId} joined the lobby");
             NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
         }
     }
