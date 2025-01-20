@@ -7,6 +7,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -101,16 +102,18 @@ public class LobbyManager : NetworkBehaviour
         try{
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
-            string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
-            Debug.Log(relayJoinCode);
-            await relayClient.StartClientWithHost(relayJoinCode);
-            
-            RequestChangeSceneServerRpc();
-            
-            NetworkManager.Singleton.SceneManager.OnSceneEvent += sceneEvent =>
+            if (joinedLobby.Data.ContainsKey("relayJoinCode"))
             {
-            Debug.Log($"[Client] Scene event: {sceneEvent.SceneName}, Type: {sceneEvent.SceneEventType}");
-            };
+                string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
+                Debug.Log($"Found relayJoinCode: {relayJoinCode}");
+                await relayClient.StartClientWithHost(relayJoinCode);
+            
+                RequestChangeSceneServerRpc();
+            }
+            else
+            {
+                Debug.LogError("The key 'relayJoinCode' was not found in the lobby data.");
+            }
             
         }catch(LobbyServiceException e){
             Debug.Log(e.Message);
@@ -119,6 +122,8 @@ public class LobbyManager : NetworkBehaviour
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestChangeSceneServerRpc(){
+        Debug.Log($"ServerRpc called by: {NetworkManager.Singleton.LocalClientId}");
+        if(!IsServer) return;
         Debug.Log("Changing scenes");
         NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
         NotifyClientsSceneChangedClientRpc();
