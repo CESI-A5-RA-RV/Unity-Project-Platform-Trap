@@ -1506,7 +1506,7 @@ MonoBehaviour:
       - m_Target: {fileID: 736402531}
         m_TargetAssemblyTypeName: MainMenu.MainMenu, Assembly-CSharp
         m_MethodName: ShowPrivateLobbyPanel
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -12125,7 +12125,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 7992486407667009782}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

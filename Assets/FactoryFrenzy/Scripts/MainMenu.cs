@@ -31,6 +31,8 @@ namespace MainMenu
         private static GameObject _currentLayout;
         public Transform contentParent;
 
+        private TaskCompletionSource<bool> _taskCompletionSource;
+
         // Start is called before the first frame update
         async void Start()
         {
@@ -103,41 +105,52 @@ namespace MainMenu
                 string lobbyType = TypeLobby.options[TypeLobby.value].text;
                 bool isPrivate = lobbyType == "Private";
 
-                // Validate inputs
-                if (string.IsNullOrWhiteSpace(lobbyName))
-                {
-                    ShowError("Veuillez entrer un nom pour le lobby.");
-                    return;
-                }
-
                 // Create lobby options
                 CreateLobbyOptions options = new CreateLobbyOptions
                 {
                     IsPrivate = isPrivate,
                     Data = new Dictionary<string, DataObject>
             {
-                { "Type", new DataObject(DataObject.VisibilityOptions.Public, lobbyType) }
+                { "Type", new DataObject(DataObject.VisibilityOptions.Public, lobbyType) },
+                { "Password", new DataObject(DataObject.VisibilityOptions.Member, GenerateRandomCode()) }
             }
                 };
 
-                // Create the lobby
+                // Create the lobby in Unity's backend
                 Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, 10, options);
-                Debug.Log($"Lobby créé avec succès : {lobby.Name}");
+                Debug.Log($"Lobby created successfully: {lobby.Name}, Code: {lobby.LobbyCode}");
 
                 if (isPrivate)
                 {
-                    ShowError($"Code du lobby privé : {lobby.LobbyCode}");
-                }
 
-                // Update public lobbies list
-                UpdateLobbiesList();
+                    ShowError($"Private Lobby Code: {lobby.LobbyCode}");
+                    await WaitForPopupToClose();
+                }
+                //await Task.Delay(15000);
+                SceneManager.LoadSceneAsync("Lobby");
+
             }
             catch (Exception ex)
             {
-                ShowError($"Erreur lors de la création du lobby : {ex.Message}");
-                Debug.LogError($"Erreur lors de la création du lobby : {ex.Message}");
+                ShowError($"Error creating lobby: {ex.Message}");
+                Debug.LogError($"Error creating lobby: {ex.Message}");
             }
         }
+
+        private async Task WaitForPopupToClose()
+        {
+            TaskCompletionSource<bool> taskCompletionSource = new TaskCompletionSource<bool>();
+
+            _taskCompletionSource = taskCompletionSource;
+
+            await taskCompletionSource.Task;
+        }
+
+        private string GenerateRandomCode()
+        {
+            return UnityEngine.Random.Range(100000, 999999).ToString();
+        }
+
 
 
         public void OnJoinPrivate()
@@ -184,50 +197,42 @@ namespace MainMenu
         {
             try
             {
-                // Clear the current list
+                // Clear the current UI
                 foreach (Transform child in contentParent)
                 {
                     Destroy(child.gameObject);
                 }
 
                 // Query public lobbies
-                QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync(new QueryLobbiesOptions
+                QueryResponse response = await LobbyService.Instance.QueryLobbiesAsync();
+                foreach (Lobby lobby in response.Results)
                 {
-                    Filters = new List<QueryFilter>
-            {
-                // Filter only public lobbies
-                new QueryFilter(
-                    field: QueryFilter.FieldOptions.AvailableSlots,
-                    op: QueryFilter.OpOptions.GT,
-                    value: "0"
-                )
-            }
-                });
+                    if (!lobby.Data.ContainsKey("Type") || lobby.Data["Type"].Value != "Public")
+                        continue;
 
-                // Populate the list with lobbies
-                foreach (Lobby lobby in queryResponse.Results)
-                {
+                    // Add to UI
                     GameObject lobbyItem = Instantiate(LobbyItemPrefab, contentParent);
                     TMP_Text lobbyName = lobbyItem.GetComponentInChildren<TMP_Text>();
                     if (lobbyName != null)
                     {
-                        string type = lobby.Data.ContainsKey("Type") ? lobby.Data["Type"].Value : "Unknown";
-                        lobbyName.text = $"{lobby.Name} ({type})";
+                        lobbyName.text = $"{lobby.Name} ({lobby.Data["Type"].Value})";
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Erreur lors de la mise à jour de la liste des lobbies : {ex.Message}");
-                ShowError("Impossible de récupérer la liste des lobbies.");
+                ShowError($"Error updating lobby list: {ex.Message}");
+                Debug.LogError($"Error updating lobby list: {ex.Message}");
             }
         }
 
 
 
-        public void ShowPrivateLobbyPanel(bool show)
+
+        public void ShowPrivateLobbyPanel()
         {
-            LobbyCode.SetActive(show);
+            SwitchLayout(LobbyCode);
+            //LobbyCode.SetActive(show);
         }
 
         private void ShowCodeInput(bool show)
@@ -245,25 +250,23 @@ namespace MainMenu
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(code))
-                {
-                    ShowError("Veuillez entrer un code de lobby.");
-                    return;
-                }
+                Debug.Log($"Attempting to join private lobby with code: {code}");
 
-                // Attempt to join the lobby
+                // Join the lobby using the provided code
                 Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code);
-                Debug.Log($"Rejoint le lobby avec succès : {lobby.Name}");
+                Debug.Log($"Joined private lobby successfully: {lobby.Name}");
 
-                // Navigate to the Lobby scene
-                SceneManager.LoadScene("LobbyScene");
+                // Navigate to the lobby scene
+                SceneManager.LoadSceneAsync("Lobby");
+                //SceneManager.LoadScene("LobbyScene");
             }
             catch (Exception ex)
             {
-                ShowError($"Erreur lors de la tentative de rejoindre le lobby : {ex.Message}");
-                Debug.LogError($"Erreur lors de la tentative de rejoindre le lobby : {ex.Message}");
+                ShowError($"Failed to join private lobby: {ex.Message}");
+                Debug.LogError($"Error joining private lobby: {ex.Message}");
             }
         }
+
 
 
         // Show the popup with the provided error message
@@ -278,6 +281,7 @@ namespace MainMenu
         public void ClosePopup()
         {
             PopUpPanel.SetActive(false);
+            _taskCompletionSource?.SetResult(true);
         }
 
     }
