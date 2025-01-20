@@ -50,7 +50,9 @@ public class LobbyManager : MonoBehaviour
         if(clientId == NetworkManager.Singleton.LocalClientId){
             Debug.Log("Client successfully connected to the host.");
         }
-        Debug.Log($"Client ID {clientId} and local client ID {NetworkManager.Singleton.LocalClientId}" );
+        if(NetworkManager.Singleton.IsClient){
+            Debug.Log($"Client ID {clientId} and local client ID {NetworkManager.Singleton.LocalClientId}" );
+        }
     }
 
     

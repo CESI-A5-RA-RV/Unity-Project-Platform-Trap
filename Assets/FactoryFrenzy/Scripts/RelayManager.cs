@@ -17,11 +17,11 @@ public class RelayManager : MonoBehaviour
     // Start is called before the first frame update
     public async Task<string> StartHostWithRelay(int maxConnections=10)
     {
-        await UnityServices.InitializeAsync();
-        if(!AuthenticationService.Instance.IsSignedIn){
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        }
-        Debug.Log("Unity Services Initialized");
+        // await UnityServices.InitializeAsync();
+        // if(!AuthenticationService.Instance.IsSignedIn){
+        //     await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        // }
+        // Debug.Log("Unity Services Initialized");
 
         try{
             allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
