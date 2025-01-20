@@ -12,23 +12,25 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour
 {
-    //Pas oublier de mettre un heartbeat pour le lobby
-
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
 
     public RelayManager relayManager;
     public RelayClient relayClient;
 
+    private Lobby lobby;
+
     private void Start(){
         if(NetworkManager.Singleton != null){
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.Singleton.OnServerStopped += OnHostStopped;
         }
     }
 
     private void OnDestroy(){
         if(NetworkManager.Singleton != null){
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.Singleton.OnServerStopped -= OnHostStopped;
         }
     }
 
@@ -36,6 +38,13 @@ public class LobbyManager : MonoBehaviour
         if(NetworkManager.Singleton.IsHost){
             Debug.Log($"New Player {clientId} joined the lobby");
             NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+        }
+    }
+
+    private void OnHostStopped(bool state){
+        if(NetworkManager.Singleton.IsHost){
+            Debug.Log("Lobby deleted");
+            LobbyService.Instance.DeleteLobbyAsync(lobby.Id);
         }
     }
     public async void createLobby(){
@@ -58,20 +67,13 @@ public class LobbyManager : MonoBehaviour
                 )},
             };
 
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName.text.ToString(), 10, options);
+            lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName.text.ToString(), 10, options);
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
 
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
             PlayerPrefs.Save();
 
-            // if(NetworkManager.Singleton.SceneManager != null){
-            //     NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
-            // }
-            // else{
-            //     Debug.Log("Network Manager is empty");
-            // }
-            
         }catch(Exception e){
             Debug.LogError(e);
         }

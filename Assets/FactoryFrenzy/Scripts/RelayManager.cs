@@ -25,15 +25,16 @@ public class RelayManager : MonoBehaviour
 
         try{
             allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "udp"));
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, "dtls"));
             relayJoinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
             Debug.Log($"Relay Allocation created: {allocation.AllocationId}");
             Debug.Log($"Relay Join Code: {relayJoinCode}");
-
+            Debug.Log(allocation.RelayServer.IpV4);
+            Debug.Log(allocation.RelayServer.Port);
             return NetworkManager.Singleton.StartHost() ? relayJoinCode : null ;
 
-        }catch(Exception e){
+        }catch(RelayServiceException e){
             Debug.LogError($"Error creating relay allocation: {e.Message}");
             return null;
         }
@@ -43,11 +44,4 @@ public class RelayManager : MonoBehaviour
         return relayJoinCode;
     }
 
-    public IEnumerator startRelayCoroutine(){
-        yield return StartHostWithRelay();
-    }
-
-    public void OnClick(){
-        StartCoroutine(startRelayCoroutine());
-    }
 }
