@@ -108,4 +108,11 @@ public class LobbyManager : MonoBehaviour
         StartTimer();
         gameObject.GetComponent<UnityEngine.UI.Button>().interactable = false;
     }
+
+    private void OnPlayerJoined(string playerName)
+    {
+        bool isHost = LobbyDataManager.Instance.Players.Count == 0;
+        LobbyDataManager.Instance.AddPlayer(playerName, playerName, isHost);
+    }
+
 }
