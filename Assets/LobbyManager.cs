@@ -109,7 +109,7 @@ public class LobbyManager : MonoBehaviour
                 Debug.Log($"Found relayJoinCode: {relayJoinCode}");
                 await relayClient.StartClientWithHost(relayJoinCode);
             
-                lobbySceneManagement.RequestChangeSceneServerRpc();
+                //lobbySceneManagement.RequestChangeSceneServerRpc();
             }
             else
             {
