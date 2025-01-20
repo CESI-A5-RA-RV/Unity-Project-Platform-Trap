@@ -11,13 +11,15 @@ using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LobbyManager : NetworkBehaviour
+public class LobbyManager : MonoBehaviour
 {
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
 
     public RelayManager relayManager;
     public RelayClient relayClient;
+
+    public LobbySceneManagement lobbySceneManagement;
 
     private Lobby lobby;
 
@@ -51,7 +53,6 @@ public class LobbyManager : NetworkBehaviour
         }
     }
 
-    
 
     private void OnHostStopped(bool state){
         if(NetworkManager.Singleton.IsHost){
@@ -108,7 +109,7 @@ public class LobbyManager : NetworkBehaviour
                 Debug.Log($"Found relayJoinCode: {relayJoinCode}");
                 await relayClient.StartClientWithHost(relayJoinCode);
             
-                RequestChangeSceneServerRpc();
+                lobbySceneManagement.RequestChangeSceneServerRpc();
             }
             else
             {
@@ -118,20 +119,6 @@ public class LobbyManager : NetworkBehaviour
         }catch(LobbyServiceException e){
             Debug.Log(e.Message);
         }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestChangeSceneServerRpc(){
-        Debug.Log($"ServerRpc called by: {NetworkManager.Singleton.LocalClientId}");
-        if(!IsServer) return;
-        Debug.Log("Changing scenes");
-        NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
-        NotifyClientsSceneChangedClientRpc();
-    }
-
-    [ClientRpc]
-    public void NotifyClientsSceneChangedClientRpc(){
-        NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
     }
 
     private string CleanLobbyCode(string lobbyCode)
