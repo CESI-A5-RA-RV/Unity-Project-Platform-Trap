@@ -17,11 +17,11 @@ public class RelayClient : MonoBehaviour
 {
 
     public async Task<bool> StartClientWithHost(string joinCode){
-        // await UnityServices.InitializeAsync();
-        // if(!AuthenticationService.Instance.IsSignedIn){
-        //     await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        // }
-        // Debug.Log("Unity Services Initialized");
+        await UnityServices.InitializeAsync();
+        if(!AuthenticationService.Instance.IsSignedIn){
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
+        Debug.Log("Unity Services Initialized");
         try{
             joinCode = CleanLobbyCode(joinCode);
             var joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode : joinCode);

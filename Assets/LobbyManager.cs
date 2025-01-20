@@ -42,11 +42,6 @@ public class LobbyManager : MonoBehaviour
     }
 
     private void OnClientConnected(ulong clientId){
-        if(NetworkManager.Singleton.IsHost){
-            Debug.Log($"New Player {clientId} joined the lobby");
-            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
-        }
-
         if(clientId == NetworkManager.Singleton.LocalClientId){
             Debug.Log("Client successfully connected to the host.");
         }
@@ -90,6 +85,8 @@ public class LobbyManager : MonoBehaviour
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
             PlayerPrefs.Save();
 
+            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+
         }catch(Exception e){
             Debug.LogError(e);
         }
@@ -108,6 +105,10 @@ public class LobbyManager : MonoBehaviour
             Debug.Log(relayJoinCode);
             await relayClient.StartClientWithHost(relayJoinCode);
             
+            NetworkManager.Singleton.SceneManager.OnSceneEvent += sceneEvent =>
+            {
+            Debug.Log($"[Client] Scene event: {sceneEvent.SceneName}, Type: {sceneEvent.SceneEventType}");
+            };
             
         }catch(LobbyServiceException e){
             Debug.Log(e.Message);
