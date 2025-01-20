@@ -105,6 +105,7 @@ public class LobbyManager : MonoBehaviour
             Debug.Log(relayJoinCode);
             await relayClient.StartClientWithHost(relayJoinCode);
             
+            
             NetworkManager.Singleton.SceneManager.OnSceneEvent += sceneEvent =>
             {
             Debug.Log($"[Client] Scene event: {sceneEvent.SceneName}, Type: {sceneEvent.SceneEventType}");

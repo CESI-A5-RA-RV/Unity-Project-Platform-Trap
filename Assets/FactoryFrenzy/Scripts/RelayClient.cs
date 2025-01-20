@@ -11,7 +11,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class RelayClient : MonoBehaviour
 {
@@ -28,7 +28,9 @@ public class RelayClient : MonoBehaviour
             Debug.Log($"Joined relay session with allocation ID: {joinAllocation.AllocationId}");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(joinAllocation, "dtls"));
             bool success = NetworkManager.Singleton.StartClient();
-            Debug.Log(success);
+            if(success){
+                NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+            }
             return !string.IsNullOrEmpty(joinCode) && success;
         }catch(Exception e){
             Debug.LogError($"Error joining relay session: {e.Message}");
