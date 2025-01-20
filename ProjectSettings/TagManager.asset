@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - Obstcales
   - Start
+  - Menu
   layers:
   - Default
   - TransparentFX
