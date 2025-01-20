@@ -59,6 +59,7 @@ public class LobbyManager : MonoBehaviour
             };
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName.text.ToString(), 10, options);
+            StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
 
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
@@ -86,6 +87,7 @@ public class LobbyManager : MonoBehaviour
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
             string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
+            Debug.Log(relayJoinCode);
             await relayClient.StartClientWithHost(relayJoinCode);
             
             
@@ -109,5 +111,16 @@ public class LobbyManager : MonoBehaviour
         Debug.Log(lobbyCode.text.ToString());
         JoinLobby(lobbyCode.text.ToString());
     }
+
+    IEnumerator HeartbeatLobbyCoroutine(string lobbyId, float waitTimeSeconds)
+{
+    var delay = new WaitForSecondsRealtime(waitTimeSeconds);
+
+    while (true)
+    {
+        LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
+        yield return delay;
+    }
+}
 
 }
