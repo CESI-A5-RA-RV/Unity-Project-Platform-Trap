@@ -10,7 +10,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LobbyManager : MonoBehaviour
+public class LobbyManager : NetworkBehaviour
 {
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
@@ -34,7 +34,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy(){
+    private void OnDisable(){
         if(NetworkManager.Singleton != null){
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.Singleton.OnServerStopped -= OnHostStopped;
