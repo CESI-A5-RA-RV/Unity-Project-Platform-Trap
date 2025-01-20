@@ -105,6 +105,7 @@ public class LobbyManager : MonoBehaviour
             Debug.Log(relayJoinCode);
             await relayClient.StartClientWithHost(relayJoinCode);
             
+            RequestChangeSceneServerRpc();
             
             NetworkManager.Singleton.SceneManager.OnSceneEvent += sceneEvent =>
             {
@@ -116,8 +117,9 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public void OnPlayerJoined(Lobby lobby){
-    //     NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Additive);
+    [ServerRpc]
+    public void RequestChangeSceneServerRpc(){
+        NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
     }
 
     private string CleanLobbyCode(string lobbyCode)
