@@ -5,7 +5,8 @@ using TMPro;
 using Unity.Netcode;
 
 public class EndLevel : NetworkBehaviour
-{
+{ // Nom des joueurs, stopper les joueurs, retour au lobby
+
     [SerializeField] private TMP_Text Countdown_TMP;
     [SerializeField] private TMP_Text Victory_TMP;
     [SerializeField] private GameObject countdownMenu;
@@ -19,6 +20,7 @@ public class EndLevel : NetworkBehaviour
     Rigidbody rbPlayer;
 
     private List<ulong> playerRanking = new List<ulong>();
+    private List<ulong> playerOut = new List<ulong>();
     private bool countdownStarted = false;
     private int countdownStart = 5;
     void Start(){
@@ -37,7 +39,6 @@ public class EndLevel : NetworkBehaviour
                 int rank = playerRanking.Count;
 
                 NotifyPlayerRankClientRpc(playerId.OwnerClientId, rank);
-                StopPlayerClientRpc(playerId.OwnerClientId);
             }
             if(!countdownStarted){
                 countdownStarted = true;
@@ -65,12 +66,13 @@ public class EndLevel : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    private void StopPlayerClientRpc(ulong clientId)
-    {
-        if (NetworkManager.Singleton.LocalClientId == clientId)
+    private void StopPlayer(ulong clientId)
+    {   //Call this in server
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient networkClient))
         {
-            Debug.LogWarning($"LocalId: {NetworkManager.Singleton.LocalClientId} and ID: {clientId}");
+            NetworkObject networkObject = networkClient.PlayerObject;
+            player = networkObject.GetComponent<ThirdPersonController>();
+            rbPlayer = networkObject.GetComponent<Rigidbody>();
             rbPlayer.velocity = Vector3.zero;
             player.DisableMovement();
         }
@@ -102,35 +104,44 @@ public class EndLevel : NetworkBehaviour
         //Add possibility to display name
         Debug.Log("Start ranking");
         
-        int noRank = playerRanking.Count;
+        int noRank = playerRanking.Count + 1;
         foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds){
+            StopPlayer(clientId);
             if(!playerRanking.Contains(clientId)){
                 //block player's movements
-                playerRanking.Add(clientId);
+                playerOut.Add(clientId);
             }
         }
-        NotifyFinalRankingsClientRpc(playerRanking.ToArray(), noRank);
+        
+        NotifyFinalRankingsClientRpc(playerRanking.ToArray(), noRank, playerOut.ToArray());
     }
 
     [ClientRpc]
-    private void NotifyFinalRankingsClientRpc(ulong[] finalRankings, int noRank)
+    private void NotifyFinalRankingsClientRpc(ulong[] finalRankings, int noRank, ulong[] eliminatedPlayers)
     {
         countdownMenu.SetActive(false);
         RankingMenu.SetActive(true);
         Debug.Log("Final Rankings:");
-        for (int i = 0; i < noRank; i++)
-        {
-            foreach(var record in finalRankings){
+        int i = 1;
+        for(i =0; i < noRank-1; i++){
+            //Add UI for ranking
+            GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
+            newItem.SetActive(true);
+            TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
+            Debug.LogWarning($"Rank Index number: {i}");
+            rankingTexts.text = $"Rank {i + 1} - {finalRankings[i]}";    
+        }
+        
+        for(i = 0; i < eliminatedPlayers.Length; i++){
                 //Add UI for ranking
                 GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
                 newItem.SetActive(true);
                 TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
-    
-                rankingTexts.text = $"Rank {i + 1} - {finalRankings[i]}";
-                      
-            }
-            
+                Debug.LogWarning($"Eliminated Index number: {i}");
+                rankingTexts.text = $"Rank {noRank} - {eliminatedPlayers[i]}";
+                
         }
+            
     }
 
 }
