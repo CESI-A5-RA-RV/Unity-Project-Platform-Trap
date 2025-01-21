@@ -3078,7 +3078,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1205633507}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1346224943}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: OnLaunch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1205633507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3595,6 +3607,7 @@ MonoBehaviour:
   nbPlayersText: {fileID: 829153804}
   NameLobby: {fileID: 340787119}
   Timer: {fileID: 67526358}
+  PlayerDataManager: {fileID: 591875762}
   duration: 60
   timeRemaining: 0
   isCountingDown: 0
@@ -5213,7 +5226,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1937773508}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1346224943}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: OnRefresh
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1937773508
 MonoBehaviour:
   m_ObjectHideFlags: 0

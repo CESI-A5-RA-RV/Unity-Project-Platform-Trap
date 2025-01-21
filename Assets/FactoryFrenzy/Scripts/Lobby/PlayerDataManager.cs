@@ -82,7 +82,7 @@ public class PlayerDataManager : MonoBehaviour
         }
     }
 
-    private void UpdatePlayerUI()
+    public void UpdatePlayerUI()
     {
         // Clear current UI
         foreach (Transform child in PlayerListScrollView.transform)

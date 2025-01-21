@@ -12,6 +12,7 @@ public class LobbyManager : MonoBehaviour
     public Text nbPlayersText;
     public TMP_Text NameLobby;
     public TMP_Text Timer;
+    [SerializeField] private PlayerDataManager PlayerDataManager;
 
     //private List<string> playerNames = new List<string>();
 
@@ -75,7 +76,7 @@ public class LobbyManager : MonoBehaviour
         //}
     //}
 
-    void StartTimer()
+    public void StartTimer()
     {
         if(isCountingDown)
         {
@@ -86,7 +87,7 @@ public class LobbyManager : MonoBehaviour
     }
 
 
-    void _tick ()
+    public void _tick ()
     {
         timeRemaining--;
         Timer.text = timeRemaining.ToString();
@@ -101,7 +102,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    void OnLaunch()
+    public void OnLaunch()
     {
         
         isCountingDown = true;
@@ -109,7 +110,7 @@ public class LobbyManager : MonoBehaviour
         gameObject.GetComponent<UnityEngine.UI.Button>().interactable = false;
     }
 
-    void OnPlayerJoined(string playerName)
+    public void OnPlayerJoined(string playerName)
     {
         bool isHost = PlayerDataManager.Instance.Players.Count == 0;
         PlayerDataManager.Instance.AddPlayer(playerName, playerName, isHost);
