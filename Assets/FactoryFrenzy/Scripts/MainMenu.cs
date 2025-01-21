@@ -47,6 +47,10 @@ namespace MainMenu
             Version_TMP.text = "V." + Application.version;
             UpdateLobbiesList();
             await InitializeUnityServicesAsync();
+
+            
+
+            
         }
 
         private async Task InitializeUnityServicesAsync()
@@ -241,8 +245,8 @@ namespace MainMenu
             // GameObject codeInputPanel = GameObject.Find("LobbyCode");
             //if (codeInputPanel != null)
             //{
-                
-                // codeInputPanel.SetActive(show);
+
+            // codeInputPanel.SetActive(show);
             //}
         }
 
@@ -283,7 +287,7 @@ namespace MainMenu
             PopUpPanel.SetActive(false);
             _taskCompletionSource?.SetResult(true);
         }
-
+                
     }
 }
 

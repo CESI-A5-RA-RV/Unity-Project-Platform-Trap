@@ -7,23 +7,24 @@ using Unity.Services.Authentication;
 
 public class PlayerDataManager : MonoBehaviour
 {
-    public static PlayerDataManager Instance; // Singleton instance
+    public static PlayerDataManager Instance;
 
     [System.Serializable]
     public class PlayerData
     {
-        public string PlayerID;  // Unique ID for each player
-        public string PlayerName;  // Player's chosen name
-        public bool IsHost;  // Indicates if the player is the lobby host
+        public string PlayerID;   
+        public string PlayerName; 
+        public bool IsHost;       
     }
 
     public List<PlayerData> Players = new List<PlayerData>();
-    public GameObject PlayerListScrollView; // The UI container for players
-    public GameObject PlayerUIPrefab; // Prefab for a player in the list
-    public InputField NameInputField; // InputField to change the player's name
 
-    private string CurrentPlayerID; // Unique ID for this instance
-    private string LobbyHostID; // ID of the lobby host
+    public GameObject PlayerListScrollView;
+    public GameObject PlayerUIPrefab;
+    public InputField NameInputField;
+
+    public string CurrentPlayerID;
+    private string LobbyHostID;
 
     private void Awake()
     {
@@ -43,22 +44,43 @@ public class PlayerDataManager : MonoBehaviour
         // Ensure the player is authenticated
         if (!AuthenticationService.Instance.IsSignedIn)
         {
+            Debug.Log("Signing in anonymously...");
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
 
-        // Generate a unique ID for the current player
-        CurrentPlayerID = AuthenticationService.Instance.PlayerId;
-
-        // If this is the host, set the host ID
-        if (Players.Count == 0) // No players in the lobby yet
+        // Retrieve the player's unique ID
+        if (AuthenticationService.Instance.IsSignedIn)
         {
-            LobbyHostID = CurrentPlayerID;
-            AddPlayer(CurrentPlayerID, "Host Player", true); // Add this player as host
+            CurrentPlayerID = AuthenticationService.Instance.PlayerId;
+            Debug.Log("Player authenticated. Player ID: " + CurrentPlayerID);
+        }
+        else
+        {
+            // Fallback: Generate a unique ID for testing purposes
+            CurrentPlayerID = System.Guid.NewGuid().ToString();
+            Debug.LogWarning("Authentication failed. Generated fallback Player ID: " + CurrentPlayerID);
         }
 
-        // Load lobby state from the cloud
+        // Add the current player to the list
+        if (Players.Count == 0)
+        {
+            LobbyHostID = CurrentPlayerID; // First player is the host
+            AddPlayer(CurrentPlayerID, CurrentPlayerID, true); // Use UID as the default name
+        }
+        else
+        {
+            AddPlayer(CurrentPlayerID, CurrentPlayerID, false);
+        }
+
+        // Load existing player data from the cloud
         await LoadPlayerDataFromCloud();
         UpdatePlayerUI();
+
+        // Set up the input field listener
+        if (NameInputField != null)
+        {
+            NameInputField.onEndEdit.AddListener(OnNameChanged);
+        }
     }
 
     public void AddPlayer(string playerID, string playerName, bool isHost)
@@ -96,24 +118,29 @@ public class PlayerDataManager : MonoBehaviour
         foreach (PlayerData player in Players)
         {
             GameObject playerUI = Instantiate(PlayerUIPrefab, PlayerListScrollView.transform);
-            playerUI.transform.Find("PlayerName").GetComponent<Text>().text = player.PlayerName;
 
-            if (player.IsHost)
+            // Set the player name or UID
+            Text playerNameText = playerUI.transform.Find("PlayerName").GetComponent<Text>();
+            playerNameText.text = string.IsNullOrWhiteSpace(player.PlayerName) ? player.PlayerID : player.PlayerName;
+
+            // Show or hide the host tag
+            GameObject hostTag = playerUI.transform.Find("HostTag").gameObject;
+            hostTag.SetActive(player.IsHost);
+
+            // If the player is the current player, position the input field
+            if (player.PlayerID == CurrentPlayerID && string.IsNullOrWhiteSpace(player.PlayerName))
             {
-                playerUI.transform.Find("HostTag").gameObject.SetActive(true);
-            }
-            else
-            {
-                playerUI.transform.Find("HostTag").gameObject.SetActive(false);
+                NameInputField.gameObject.SetActive(true);
+                NameInputField.transform.SetParent(playerUI.transform, false);
+                NameInputField.transform.localPosition = Vector3.zero; // Center position
+                NameInputField.text = ""; // Clear input field
             }
         }
     }
 
-
     private async void SavePlayerDataToCloud()
     {
-        // Convert player list to JSON and save to Unity Cloud
-        string playersJson = JsonUtility.ToJson(new { Players = this.Players });
+        string playersJson = JsonUtility.ToJson(new Wrapper { Players = this.Players });
         await CloudSaveService.Instance.Data.ForceSaveAsync(new Dictionary<string, object>
         {
             { "PlayerData", playersJson }
@@ -133,10 +160,19 @@ public class PlayerDataManager : MonoBehaviour
         }
         catch
         {
-            Debug.Log("Failed to load player data from the cloud.");
+            Debug.LogWarning("Failed to load player data from the cloud.");
         }
 
-        UpdatePlayerUI(); // Ensure the UI is updated after loading data
+        UpdatePlayerUI();
+    }
+
+    private void OnNameChanged(string newName)
+    {
+        if (!string.IsNullOrWhiteSpace(newName))
+        {
+            UpdatePlayerName(CurrentPlayerID, newName);
+            NameInputField.gameObject.SetActive(false); // Hide input field
+        }
     }
 
     [System.Serializable]
