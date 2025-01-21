@@ -84,6 +84,8 @@ public class PlayerDataManager : MonoBehaviour
 
     public void UpdatePlayerUI()
     {
+        Debug.Log("Updating player UI. Player count: " + Players.Count);
+
         // Clear current UI
         foreach (Transform child in PlayerListScrollView.transform)
         {
@@ -96,7 +98,6 @@ public class PlayerDataManager : MonoBehaviour
             GameObject playerUI = Instantiate(PlayerUIPrefab, PlayerListScrollView.transform);
             playerUI.transform.Find("PlayerName").GetComponent<Text>().text = player.PlayerName;
 
-            // Show "Lobby Host" tag if applicable
             if (player.IsHost)
             {
                 playerUI.transform.Find("HostTag").gameObject.SetActive(true);
@@ -105,16 +106,9 @@ public class PlayerDataManager : MonoBehaviour
             {
                 playerUI.transform.Find("HostTag").gameObject.SetActive(false);
             }
-
-            // Allow the current player to edit their own name
-            if (player.PlayerID == CurrentPlayerID)
-            {
-                NameInputField = playerUI.transform.Find("NameInputField").GetComponent<InputField>();
-                NameInputField.text = player.PlayerName;
-                NameInputField.onEndEdit.AddListener((newName) => UpdatePlayerName(CurrentPlayerID, newName));
-            }
         }
     }
+
 
     private async void SavePlayerDataToCloud()
     {
@@ -141,6 +135,8 @@ public class PlayerDataManager : MonoBehaviour
         {
             Debug.Log("Failed to load player data from the cloud.");
         }
+
+        UpdatePlayerUI(); // Ensure the UI is updated after loading data
     }
 
     [System.Serializable]

@@ -31,6 +31,7 @@ public class LobbyManager : MonoBehaviour
         //UpdatePlayerList();
         string Name = PlayerPrefs.GetString("Lobby Name", "Aucune Donnée");
         NameLobby.text = Name;
+        OnRefresh();
     }
 
     //public void UpdatePlayerList()
