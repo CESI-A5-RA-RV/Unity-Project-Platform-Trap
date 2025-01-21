@@ -9,13 +9,18 @@ public class EndLevel : NetworkBehaviour
     [SerializeField] private TMP_Text Countdown_TMP;
     [SerializeField] private TMP_Text Victory_TMP;
     [SerializeField] private GameObject countdownMenu;
+    [SerializeField] private GameObject RankingMenu;
+
+    [SerializeField] private GameObject rankingItem;
+
+    public Transform parentRanking;
 
     ThirdPersonController player;
     Rigidbody rbPlayer;
 
     private List<ulong> playerRanking = new List<ulong>();
     private bool countdownStarted = false;
-    private int countdownStart = 30;
+    private int countdownStart = 5;
     void Start(){
         countdownMenu.SetActive(false);
     }
@@ -32,11 +37,13 @@ public class EndLevel : NetworkBehaviour
                 int rank = playerRanking.Count;
 
                 NotifyPlayerRankClientRpc(playerId.OwnerClientId, rank);
+                StopPlayerClientRpc(playerId.OwnerClientId);
             }
             if(!countdownStarted){
                 countdownStarted = true;
                 StartCoroutine(startCelebrate());
             }
+            
             
         }
     }
@@ -58,25 +65,43 @@ public class EndLevel : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    private void StopPlayerClientRpc(ulong clientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == clientId)
+        {
+            Debug.LogWarning($"LocalId: {NetworkManager.Singleton.LocalClientId} and ID: {clientId}");
+            rbPlayer.velocity = Vector3.zero;
+            player.DisableMovement();
+        }
+    }
+
     private IEnumerator startCelebrate(){
-        yield return new WaitForSeconds(2f);
-        //rbPlayer.velocity = Vector3.zero;
-        //player.DisableMovement();
-    
+        yield return new WaitForSeconds(1f);
+        
         int countdown = countdownStart;
         while (countdown > 0){
             countdown--;
             NotifyCountdownTimerClientRpc(countdown);
             yield return new WaitForSeconds(1f);
         }
-
-        countdownMenu.SetActive(false);
+        
+        EndGame();
     }
 
+   
     private void EndGame(){
+        if(!IsServer) return;
+        RankPlayersServerRpc();
+    }
+
+    [ServerRpc]
+    private void RankPlayersServerRpc(){
         //Block all players movements
         //Display ranking
         //Add possibility to display name
+        Debug.Log("Start ranking");
+        
         int noRank = playerRanking.Count;
         foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds){
             if(!playerRanking.Contains(clientId)){
@@ -90,14 +115,21 @@ public class EndLevel : NetworkBehaviour
     [ClientRpc]
     private void NotifyFinalRankingsClientRpc(ulong[] finalRankings, int noRank)
     {
+        countdownMenu.SetActive(false);
+        RankingMenu.SetActive(true);
         Debug.Log("Final Rankings:");
         for (int i = 0; i < noRank; i++)
         {
-            //Add UI for ranking
-            Debug.Log($"Rank {i + 1}: Player {finalRankings[i]}");
-        }
-        for (int i = noRank; i < finalRankings.Length; i++){
-            Debug.Log($"Rank {i + 1}: Player {finalRankings[i]}");
+            foreach(var record in finalRankings){
+                //Add UI for ranking
+                GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
+                newItem.SetActive(true);
+                TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
+    
+                rankingTexts.text = $"Rank {i + 1} - {finalRankings[i]}";
+                      
+            }
+            
         }
     }
 
