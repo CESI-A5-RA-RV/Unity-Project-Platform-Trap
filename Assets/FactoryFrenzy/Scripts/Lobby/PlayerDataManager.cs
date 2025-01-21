@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.Services.CloudSave; // For Unity Cloud Save
-using Unity.Services.Authentication; // For player authentication
+using Unity.Services.CloudSave; 
+using Unity.Services.Authentication; 
 
-
-public class LobbyDataManager : MonoBehaviour
+public class PlayerDataManager : MonoBehaviour
 {
-    public static LobbyDataManager Instance; // Singleton instance
+    public static PlayerDataManager Instance; // Singleton instance
 
     [System.Serializable]
     public class PlayerData
@@ -58,8 +57,8 @@ public class LobbyDataManager : MonoBehaviour
         }
 
         // Load lobby state from the cloud
-        await LoadLobbyDataFromCloud();
-        UpdateLobbyUI();
+        await LoadPlayerDataFromCloud();
+        UpdatePlayerUI();
     }
 
     public void AddPlayer(string playerID, string playerName, bool isHost)
@@ -67,8 +66,8 @@ public class LobbyDataManager : MonoBehaviour
         if (!Players.Exists(p => p.PlayerID == playerID))
         {
             Players.Add(new PlayerData { PlayerID = playerID, PlayerName = playerName, IsHost = isHost });
-            SaveLobbyDataToCloud();
-            UpdateLobbyUI();
+            SavePlayerDataToCloud();
+            UpdatePlayerUI();
         }
     }
 
@@ -78,12 +77,12 @@ public class LobbyDataManager : MonoBehaviour
         if (player != null)
         {
             player.PlayerName = newName;
-            SaveLobbyDataToCloud();
-            UpdateLobbyUI();
+            SavePlayerDataToCloud();
+            UpdatePlayerUI();
         }
     }
 
-    private void UpdateLobbyUI()
+    private void UpdatePlayerUI()
     {
         // Clear current UI
         foreach (Transform child in PlayerListScrollView.transform)
@@ -117,30 +116,30 @@ public class LobbyDataManager : MonoBehaviour
         }
     }
 
-    private async void SaveLobbyDataToCloud()
+    private async void SavePlayerDataToCloud()
     {
         // Convert player list to JSON and save to Unity Cloud
         string playersJson = JsonUtility.ToJson(new { Players = this.Players });
         await CloudSaveService.Instance.Data.ForceSaveAsync(new Dictionary<string, object>
         {
-            { "LobbyData", playersJson }
+            { "PlayerData", playersJson }
         });
     }
 
-    private async System.Threading.Tasks.Task LoadLobbyDataFromCloud()
+    private async System.Threading.Tasks.Task LoadPlayerDataFromCloud()
     {
         try
         {
             var savedData = await CloudSaveService.Instance.Data.LoadAsync();
-            if (savedData.ContainsKey("LobbyData"))
+            if (savedData.ContainsKey("PlayerData"))
             {
-                string playersJson = savedData["LobbyData"];
+                string playersJson = savedData["PlayerData"];
                 Players = JsonUtility.FromJson<Wrapper>(playersJson).Players;
             }
         }
         catch
         {
-            Debug.Log("Failed to load lobby data from the cloud.");
+            Debug.Log("Failed to load player data from the cloud.");
         }
     }
 

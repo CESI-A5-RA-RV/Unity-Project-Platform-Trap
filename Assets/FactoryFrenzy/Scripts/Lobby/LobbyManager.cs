@@ -13,7 +13,7 @@ public class LobbyManager : MonoBehaviour
     public TMP_Text NameLobby;
     public TMP_Text Timer;
 
-    private List<string> playerNames = new List<string>();
+    //private List<string> playerNames = new List<string>();
 
     public int duration = 15;
     public int timeRemaining;
@@ -24,58 +24,58 @@ public class LobbyManager : MonoBehaviour
     
     void Start()
     {
-        playerNames.Add("Anna");
-        playerNames.Add("Priscilla");
-        playerNames.Add("Lola");
-        UpdatePlayerList();
+        //playerNames.Add("Anna");
+        //playerNames.Add("Priscilla");
+        //playerNames.Add("Lola");
+        //UpdatePlayerList();
         string Name = PlayerPrefs.GetString("Lobby Name", "Aucune Donnée");
         NameLobby.text = Name;
     }
 
-    public void UpdatePlayerList()
-    {
-        foreach (Transform child in contentParent)
-        {
-            Destroy(child.gameObject);
-        }
+    //public void UpdatePlayerList()
+    //{
+        //foreach (Transform child in contentParent)
+        //{
+            //Destroy(child.gameObject);
+        //}
 
 
-        foreach (string playerName in playerNames)
-        {
-            GameObject playerItem = Instantiate(playerItemPrefab, contentParent);
-            Text playerText = playerItem.GetComponentInChildren<Text>();
-            if (playerText != null)
-            {
-                playerText.text = playerName;
-            }
-        }
+        //foreach (string playerName in playerNames)
+        //{
+            //GameObject playerItem = Instantiate(playerItemPrefab, contentParent);
+            //Text playerText = playerItem.GetComponentInChildren<Text>();
+            //if (playerText != null)
+            //{
+                //playerText.text = playerName;
+            //}
+        //}
 
-        UpdateNbPlayers();
-    }
-
-    //à modifier plutard pour prendre aucun paramètres ou d'autres paramètres
-    public void AddPlayer(string playerName)
-    {
-        playerNames.Add(playerName);
-        UpdatePlayerList();
-    }
+        //UpdateNbPlayers();
+    //}
 
     //à modifier plutard pour prendre aucun paramètres ou d'autres paramètres
-    public void RemovePlayer(string playerName)
-    {
-        playerNames.Remove(playerName);
-        UpdatePlayerList();
-    }
+    //public void AddPlayer(string playerName)
+    //{
+        //playerNames.Add(playerName);
+        //UpdatePlayerList();
+    //}
 
-    private void UpdateNbPlayers()
-    {
-        if (nbPlayersText != null)
-        {
-            nbPlayersText.text = $"Players : {playerNames.Count}";
-        }
-    }
+    //à modifier plutard pour prendre aucun paramètres ou d'autres paramètres
+    //public void RemovePlayer(string playerName)
+    //{
+        //playerNames.Remove(playerName);
+        //UpdatePlayerList();
+    //}
 
-    public void StartTimer()
+    //private void UpdateNbPlayers()
+    //{
+        //if (nbPlayersText != null)
+        //{
+            //nbPlayersText.text = $"Players : {playerNames.Count}";
+        //}
+    //}
+
+    void StartTimer()
     {
         if(isCountingDown)
         {
@@ -86,7 +86,7 @@ public class LobbyManager : MonoBehaviour
     }
 
 
-    private void _tick ()
+    void _tick ()
     {
         timeRemaining--;
         Timer.text = timeRemaining.ToString();
@@ -101,7 +101,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public void OnLaunch()
+    void OnLaunch()
     {
         
         isCountingDown = true;
@@ -109,10 +109,24 @@ public class LobbyManager : MonoBehaviour
         gameObject.GetComponent<UnityEngine.UI.Button>().interactable = false;
     }
 
-    private void OnPlayerJoined(string playerName)
+    void OnPlayerJoined(string playerName)
     {
-        bool isHost = LobbyDataManager.Instance.Players.Count == 0;
-        LobbyDataManager.Instance.AddPlayer(playerName, playerName, isHost);
+        bool isHost = PlayerDataManager.Instance.Players.Count == 0;
+        PlayerDataManager.Instance.AddPlayer(playerName, playerName, isHost);
     }
+
+    public void OnRefresh()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.UpdatePlayerUI();
+            Debug.Log("Player list refreshed.");
+        }
+        else
+        {
+            Debug.LogWarning("PlayerDataManager instance not found!");
+        }
+    }
+
 
 }
