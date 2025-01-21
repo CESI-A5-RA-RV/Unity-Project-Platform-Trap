@@ -15,9 +15,12 @@ public class LobbyManager : MonoBehaviour
 {
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
+    public TMP_Text username;
 
     public RelayManager relayManager;
     public RelayClient relayClient;
+
+    [SerializeField] private EndLevel endLevel;
 
     private Lobby lobby;
 
@@ -33,6 +36,7 @@ public class LobbyManager : MonoBehaviour
                 }
             };
         }
+        username.text = $"Player{UnityEngine.Random.Range(1, 999)}";
     }
 
     private void OnDestroy(){
@@ -80,10 +84,20 @@ public class LobbyManager : MonoBehaviour
 
             lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName.text.ToString(), 10, options);
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
-            Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
 
+            UpdatePlayerOptions playerOptions = new UpdatePlayerOptions();
+            playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
+                {"Username", new PlayerDataObject(
+                    visibility: PlayerDataObject.VisibilityOptions.Member,
+                    value: username.text
+                )}
+            };
+            await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
+            Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
             PlayerPrefs.Save();
+
+            endLevel.Initialized(lobby);
 
             NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
 
@@ -101,6 +115,16 @@ public class LobbyManager : MonoBehaviour
         try{
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
+
+            UpdatePlayerOptions playerOptions = new UpdatePlayerOptions();
+            playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
+                {"Username", new PlayerDataObject(
+                    visibility: PlayerDataObject.VisibilityOptions.Member,
+                    value: username.text
+                )}
+            };
+            await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
+
             if (joinedLobby.Data.ContainsKey("relayJoinCode"))
             {
                 string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;

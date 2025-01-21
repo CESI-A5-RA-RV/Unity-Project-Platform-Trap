@@ -36,7 +36,7 @@ public class Bubble : MonoBehaviour
         playerTrapped = true;
         // Stop the player's velocity
         rbPlayer.velocity *= 0f;
-        player.DisableMovement();
+        player.DisableMovementClientRpc();
         
         playerPosition.position = transform.position + new UnityEngine.Vector3(0f, -0.75f, 0f);
 
@@ -52,7 +52,7 @@ public class Bubble : MonoBehaviour
         yield return new WaitForSeconds(stopDuration);
 
         // Return the player's velocity to the original speed
-        player.EnableMovement();
+        player.EnableMovementClientRpc();
         playerTrapped = false;
         if(playerAnimator != null){
             playerAnimator.ResetTrigger("StuckBubble");

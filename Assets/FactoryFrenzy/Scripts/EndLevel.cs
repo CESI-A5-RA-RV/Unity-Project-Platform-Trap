@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
+using Unity.Services.Lobbies;
 
 public class EndLevel : NetworkBehaviour
-{ // Nom des joueurs, stopper les joueurs, retour au lobby
+{ // Nom des joueurs
 
     [SerializeField] private TMP_Text Countdown_TMP;
     [SerializeField] private TMP_Text Victory_TMP;
@@ -16,8 +18,10 @@ public class EndLevel : NetworkBehaviour
 
     public Transform parentRanking;
 
-    ThirdPersonController player;
-    Rigidbody rbPlayer;
+    private ThirdPersonController playerController;
+    private Player player;
+
+    private Lobby currentLobby;
 
     private List<ulong> playerRanking = new List<ulong>();
     private List<ulong> playerOut = new List<ulong>();
@@ -27,13 +31,16 @@ public class EndLevel : NetworkBehaviour
         countdownMenu.SetActive(false);
     }
 
+    public void Initialized(Lobby lobby){
+        currentLobby = lobby;
+    }
+
     private void OnTriggerEnter(Collider other){
         if(!IsServer) return;
 
         if(other.gameObject.CompareTag("Player")){
-            player = other.gameObject.GetComponent<ThirdPersonController>();
-            rbPlayer = other.gameObject.GetComponent<Rigidbody>();
             var playerId = other.GetComponent<NetworkObject>();
+            player = other.GetComponent<Player>();
             if(player != null && !playerRanking.Contains(playerId.OwnerClientId)){
                 playerRanking.Add(playerId.OwnerClientId);
                 int rank = playerRanking.Count;
@@ -44,6 +51,8 @@ public class EndLevel : NetworkBehaviour
                 countdownStarted = true;
                 StartCoroutine(startCelebrate());
             }
+            Debug.LogWarning($"Client ID: {playerId.OwnerClientId}");
+            StartDisabledMovementServerRpc(playerId.OwnerClientId);
             
             
         }
@@ -66,21 +75,29 @@ public class EndLevel : NetworkBehaviour
         }
     }
 
-    private void StopPlayer(ulong clientId)
+    [ServerRpc]
+    public void StartDisabledMovementServerRpc(ulong clientId){
+        if(IsServer){
+            StartCoroutine(StopPlayer(clientId));
+        }
+    }
+
+    private IEnumerator StopPlayer(ulong clientId)
     {   //Call this in server
+        yield return new WaitForSeconds(0.5f);
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient networkClient))
         {
+            Debug.LogWarning($"Client ID: {clientId}");
             NetworkObject networkObject = networkClient.PlayerObject;
-            player = networkObject.GetComponent<ThirdPersonController>();
-            rbPlayer = networkObject.GetComponent<Rigidbody>();
-            rbPlayer.velocity = Vector3.zero;
-            player.DisableMovement();
+            playerController = networkObject.GetComponent<ThirdPersonController>();
+            playerController.DisableMovementClientRpc();
+        }
+        else{
+            Debug.LogWarning("Player not identified, can't disable movement");
         }
     }
 
     private IEnumerator startCelebrate(){
-        yield return new WaitForSeconds(1f);
-        
         int countdown = countdownStart;
         while (countdown > 0){
             countdown--;
@@ -100,13 +117,11 @@ public class EndLevel : NetworkBehaviour
     [ServerRpc]
     private void RankPlayersServerRpc(){
         //Block all players movements
-        //Display ranking
         //Add possibility to display name
         Debug.Log("Start ranking");
         
         int noRank = playerRanking.Count + 1;
         foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds){
-            StopPlayer(clientId);
             if(!playerRanking.Contains(clientId)){
                 //block player's movements
                 playerOut.Add(clientId);
@@ -114,6 +129,7 @@ public class EndLevel : NetworkBehaviour
         }
         
         NotifyFinalRankingsClientRpc(playerRanking.ToArray(), noRank, playerOut.ToArray());
+        StartCoroutine(returnToLobby());
     }
 
     [ClientRpc]
@@ -128,20 +144,35 @@ public class EndLevel : NetworkBehaviour
             GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
             newItem.SetActive(true);
             TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
-            Debug.LogWarning($"Rank Index number: {i}");
-            rankingTexts.text = $"Rank {i + 1} - {finalRankings[i]}";    
+            //Debug.LogWarning($"Rank Index number: {i}");
+            NetworkObject player = NetworkManager.Singleton.ConnectedClients[finalRankings[i]].PlayerObject;
+            Player playerName = player.GetComponent<Player>();
+            rankingTexts.text = $"Rank {i + 1} - {playerName.Data["Username"].Value}";    
         }
         
         for(i = 0; i < eliminatedPlayers.Length; i++){
-                //Add UI for ranking
-                GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
-                newItem.SetActive(true);
-                TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
-                Debug.LogWarning($"Eliminated Index number: {i}");
-                rankingTexts.text = $"Rank {noRank} - {eliminatedPlayers[i]}";
+            //Add UI for disqualified/eliminated players
+            GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
+            newItem.SetActive(true);
+            TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
+            //Debug.LogWarning($"Eliminated Index number: {i}");
+            NetworkObject player = NetworkManager.Singleton.ConnectedClients[eliminatedPlayers[i]].PlayerObject;
+            Player playerName = player.GetComponent<Player>();
+            rankingTexts.text = $"Rank {noRank} - {playerName.Data["Username"].Value}";
                 
         }
             
+    }
+
+    private IEnumerator returnToLobby(){
+        yield return new WaitForSeconds(10f);
+        foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds){
+            NetworkObject player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+            if(player !=null){
+                player.GetComponent<ThirdPersonController>().EnableMovementClientRpc();
+            }
+        }
+        NetworkManager.SceneManager.LoadScene("LobbyEmpty", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
 }

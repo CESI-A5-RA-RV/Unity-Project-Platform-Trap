@@ -35,7 +35,7 @@ public class CountdownMenu : MonoBehaviour
     private IEnumerator startCountdown(ThirdPersonController player){
         int countdown = countdownStart;
         while (countdown > 0){
-            player.DisableMovement();
+            player.DisableMovementClientRpc();
             
             if(countdown < 6){
                 display = countdown.ToString();
@@ -51,7 +51,7 @@ public class CountdownMenu : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 countdownMenu.SetActive(false);
                 barrier.SetActive(false);
-                player.EnableMovement();
+                player.EnableMovementClientRpc();
             }
         }
           
