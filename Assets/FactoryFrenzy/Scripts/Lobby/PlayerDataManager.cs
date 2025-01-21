@@ -12,16 +12,15 @@ public class PlayerDataManager : MonoBehaviour
     [System.Serializable]
     public class PlayerData
     {
-        public string PlayerID;   
-        public string PlayerName; 
-        public bool IsHost;       
+        public string PlayerID;
+        public string PlayerName;
+        public bool IsHost;
     }
 
     public List<PlayerData> Players = new List<PlayerData>();
 
     public GameObject PlayerListScrollView;
     public GameObject PlayerUIPrefab;
-    public InputField NameInputField;
 
     public string CurrentPlayerID;
     private string LobbyHostID;
@@ -41,46 +40,29 @@ public class PlayerDataManager : MonoBehaviour
 
     private async void Start()
     {
-        // Ensure the player is authenticated
+        // Authenticate player
         if (!AuthenticationService.Instance.IsSignedIn)
         {
-            Debug.Log("Signing in anonymously...");
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
 
-        // Retrieve the player's unique ID
-        if (AuthenticationService.Instance.IsSignedIn)
-        {
-            CurrentPlayerID = AuthenticationService.Instance.PlayerId;
-            Debug.Log("Player authenticated. Player ID: " + CurrentPlayerID);
-        }
-        else
-        {
-            // Fallback: Generate a unique ID for testing purposes
-            CurrentPlayerID = System.Guid.NewGuid().ToString();
-            Debug.LogWarning("Authentication failed. Generated fallback Player ID: " + CurrentPlayerID);
-        }
+        CurrentPlayerID = AuthenticationService.Instance.IsSignedIn
+            ? AuthenticationService.Instance.PlayerId
+            : System.Guid.NewGuid().ToString();
 
-        // Add the current player to the list
+        // First player is the host
         if (Players.Count == 0)
         {
-            LobbyHostID = CurrentPlayerID; // First player is the host
-            AddPlayer(CurrentPlayerID, CurrentPlayerID, true); // Use UID as the default name
+            LobbyHostID = CurrentPlayerID;
+            AddPlayer(CurrentPlayerID, "HostPlayer", true);
         }
         else
         {
-            AddPlayer(CurrentPlayerID, CurrentPlayerID, false);
+            AddPlayer(CurrentPlayerID, "Player", false);
         }
 
-        // Load existing player data from the cloud
         await LoadPlayerDataFromCloud();
         UpdatePlayerUI();
-
-        // Set up the input field listener
-        if (NameInputField != null)
-        {
-            NameInputField.onEndEdit.AddListener(OnNameChanged);
-        }
     }
 
     public void AddPlayer(string playerID, string playerName, bool isHost)
@@ -93,54 +75,28 @@ public class PlayerDataManager : MonoBehaviour
         }
     }
 
-    public void UpdatePlayerName(string playerID, string newName)
-    {
-        PlayerData player = Players.Find(p => p.PlayerID == playerID);
-        if (player != null)
-        {
-            player.PlayerName = newName;
-            SavePlayerDataToCloud();
-            UpdatePlayerUI();
-        }
-    }
-
     public void UpdatePlayerUI()
     {
-        Debug.Log("Updating player UI. Player count: " + Players.Count);
-
-        // Clear current UI
         foreach (Transform child in PlayerListScrollView.transform)
         {
             Destroy(child.gameObject);
         }
 
-        // Populate the player list UI
         foreach (PlayerData player in Players)
         {
             GameObject playerUI = Instantiate(PlayerUIPrefab, PlayerListScrollView.transform);
 
-            // Set the player name or UID
             Text playerNameText = playerUI.transform.Find("PlayerName").GetComponent<Text>();
-            playerNameText.text = string.IsNullOrWhiteSpace(player.PlayerName) ? player.PlayerID : player.PlayerName;
+            playerNameText.text = player.PlayerName;
 
-            // Show or hide the host tag
             GameObject hostTag = playerUI.transform.Find("HostTag").gameObject;
             hostTag.SetActive(player.IsHost);
-
-            // If the player is the current player, position the input field
-            if (player.PlayerID == CurrentPlayerID && string.IsNullOrWhiteSpace(player.PlayerName))
-            {
-                NameInputField.gameObject.SetActive(true);
-                NameInputField.transform.SetParent(playerUI.transform, false);
-                NameInputField.transform.localPosition = Vector3.zero; // Center position
-                NameInputField.text = ""; // Clear input field
-            }
         }
     }
 
     private async void SavePlayerDataToCloud()
     {
-        string playersJson = JsonUtility.ToJson(new Wrapper { Players = this.Players });
+        string playersJson = JsonUtility.ToJson(new Wrapper { Players = Players });
         await CloudSaveService.Instance.Data.ForceSaveAsync(new Dictionary<string, object>
         {
             { "PlayerData", playersJson }
@@ -164,15 +120,6 @@ public class PlayerDataManager : MonoBehaviour
         }
 
         UpdatePlayerUI();
-    }
-
-    private void OnNameChanged(string newName)
-    {
-        if (!string.IsNullOrWhiteSpace(newName))
-        {
-            UpdatePlayerName(CurrentPlayerID, newName);
-            NameInputField.gameObject.SetActive(false); // Hide input field
-        }
     }
 
     [System.Serializable]

@@ -14,43 +14,137 @@ public class LobbyManager : MonoBehaviour
     public TMP_Text NameLobby;
     public TMP_Text Timer;
     [SerializeField] private PlayerDataManager PlayerDataManager;
-    public InputField NewNameInputField;
     public Button Server;
     public Button Host;
     public Button Client;
     [SerializeField] private GameObject NetworkLayout;
     [SerializeField] private GameObject Lobby;
 
-    //private List<string> playerNames = new List<string>();
+    private List<string> availableNames = new List<string>()
+    {
+        "PlayerAlpha",
+        "PlayerBeta",
+        "PlayerGamma",
+        "PlayerDelta",
+        "PlayerEpsilon",
+        "PlayerZeta",
+        "PlayerEta",
+        "PlayerTheta",
+        "PlayerOmega",
+        "PlayerHydrius"
+    };
 
     public int duration = 15;
     public int timeRemaining;
     public bool isCountingDown = false;
 
-
     private static GameObject _previousLayout;
     private static GameObject _currentLayout;
-
-
 
     void Start()
     {
         NetworkLayout.SetActive(true);
 
-        if (NewNameInputField != null)
-        {
-            NewNameInputField.onEndEdit.AddListener(OnNameChanged);
-        }
-        //playerNames.Add("Anna");
-        //playerNames.Add("Priscilla");
-        //playerNames.Add("Lola");
-        //UpdatePlayerList();
-        string Name = PlayerPrefs.GetString("Lobby Name", "Aucune Donnée");
-        NameLobby.text = Name;
+        string lobbyName = PlayerPrefs.GetString("Lobby Name", "No Name");
+        NameLobby.text = lobbyName;
         OnRefresh();
-        
     }
-    
+
+    public void StartTimer()
+    {
+        if (isCountingDown)
+        {
+            isCountingDown = true;
+            timeRemaining = duration;
+            Invoke("_tick", 1f);
+        }
+    }
+
+    public void _tick()
+    {
+        timeRemaining--;
+        Timer.text = timeRemaining.ToString();
+        if (timeRemaining > 0)
+        {
+            Invoke("_tick", 1f);
+        }
+        else
+        {
+            isCountingDown = false;
+            SceneManager.LoadSceneAsync("TrapTest");
+        }
+    }
+
+    public void OnLaunch()
+    {
+        isCountingDown = true;
+        StartTimer();
+        gameObject.GetComponent<Button>().interactable = false;
+    }
+
+    public void OnPlayerJoined()
+    {
+        if (PlayerDataManager != null)
+        {
+            // Get a unique name
+            string playerName = GetUniquePlayerName();
+
+            if (playerName != null)
+            {
+                bool isHost = PlayerDataManager.Players.Count == 0;
+                PlayerDataManager.AddPlayer(System.Guid.NewGuid().ToString(), playerName, isHost);
+            }
+            else
+            {
+                Debug.LogWarning("No unique names available!");
+            }
+        }
+    }
+
+    private string GetUniquePlayerName()
+    {
+        if (availableNames.Count == 0) return null;
+
+        int randomIndex = Random.Range(0, availableNames.Count);
+        string name = availableNames[randomIndex];
+        availableNames.RemoveAt(randomIndex);
+        return name;
+    }
+
+    public void OnRefresh()
+    {
+        if (PlayerDataManager != null)
+        {
+            PlayerDataManager.UpdatePlayerUI();
+            Debug.Log("Player list refreshed.");
+        }
+        else
+        {
+            Debug.LogWarning("PlayerDataManager instance not found!");
+        }
+    }
+
+    public void StartServer()
+    {
+        NetworkManager.Singleton.StartServer();
+        NetworkLayout.SetActive(false);
+        Lobby.SetActive(true);
+    }
+
+    public void StartHost()
+    {
+        NetworkManager.Singleton.StartHost();
+        NetworkLayout.SetActive(false);
+        Lobby.SetActive(true);
+    }
+
+    public void StartClient()
+    {
+        NetworkManager.Singleton.StartClient();
+        NetworkLayout.SetActive(false);
+        Lobby.SetActive(true);
+    }
+
 
     //public void UpdatePlayerList()
     //{
@@ -95,89 +189,7 @@ public class LobbyManager : MonoBehaviour
     //}
     //}
 
-    public void StartTimer()
-    {
-        if (isCountingDown)
-        {
-            isCountingDown = true;
-            timeRemaining = duration;
-            Invoke("_tick", 1f);
-        }
-    }
-
-    public void _tick()
-    {
-        timeRemaining--;
-        Timer.text = timeRemaining.ToString();
-        if (timeRemaining > 0)
-        {
-            Invoke("_tick", 1f);
-        }
-        else
-        {
-            isCountingDown = false;
-            SceneManager.LoadSceneAsync("TrapTest");
-        }
-    }
-
-    public void OnLaunch()
-    {
-        isCountingDown = true;
-        StartTimer();
-        gameObject.GetComponent<UnityEngine.UI.Button>().interactable = false;
-    }
-
-    public void OnPlayerJoined(string playerName)
-    {
-        if (PlayerDataManager != null)
-        {
-            bool isHost = PlayerDataManager.Players.Count == 0;
-            PlayerDataManager.AddPlayer(System.Guid.NewGuid().ToString(), playerName, isHost);
-        }
-    }
-
-    public void OnRefresh()
-    {
-        if (PlayerDataManager != null)
-        {
-            PlayerDataManager.UpdatePlayerUI();
-            Debug.Log("Player list refreshed.");
-        }
-        else
-        {
-            Debug.LogWarning("PlayerDataManager instance not found!");
-        }
-    }
-
-    private void OnNameChanged(string newName)
-    {
-        if (!string.IsNullOrWhiteSpace(newName))
-        {
-            PlayerDataManager.UpdatePlayerName(PlayerDataManager.Instance.CurrentPlayerID, newName);
-            OnRefresh(); // Refresh the player list UI to reflect the updated name
-        }
-    }
-
-    public void StartServer()
-    {
-        NetworkManager.Singleton.StartServer();
-        NetworkLayout.SetActive(false);
-        Lobby.SetActive(true);
-    }
-
-    public void StartHost()
-    {
-        NetworkManager.Singleton.StartHost();
-        NetworkLayout.SetActive(false);
-        Lobby.SetActive(true);
-    }
-
-    public void StartClient()
-    {
-        NetworkManager.Singleton.StartClient();        
-        NetworkLayout.SetActive(false);
-        Lobby.SetActive(true);
-    }
+    
 
    
 }
