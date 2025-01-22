@@ -36,6 +36,7 @@ namespace MainMenu
         // Start is called before the first frame update
         async void Start()
         {
+            await UnityServices.InitializeAsync();
             HomeLayout.SetActive(true);
             SettingsLayout.SetActive(false);
             QuitLayout.SetActive(false);
@@ -136,7 +137,7 @@ namespace MainMenu
             }
             catch (Exception ex)
             {
-                ShowError($"Error creating lobby: {ex.Message}");
+                //ShowError($"Error creating lobby: {ex.Message}");
                 Debug.LogError($"Error creating lobby: {ex.Message}");
             }
         }
@@ -199,6 +200,7 @@ namespace MainMenu
 
         public async void UpdateLobbiesList()
         {
+            await UnityServices.InitializeAsync();
             try
             {
                 // Clear the current UI
@@ -225,7 +227,7 @@ namespace MainMenu
             }
             catch (Exception ex)
             {
-                ShowError($"Error updating lobby list: {ex.Message}");
+                //ShowError($"Error updating lobby list: {ex.Message}");
                 Debug.LogError($"Error updating lobby list: {ex.Message}");
             }
         }
@@ -266,7 +268,7 @@ namespace MainMenu
             }
             catch (Exception ex)
             {
-                ShowError($"Failed to join private lobby: {ex.Message}");
+                //ShowError($"Failed to join private lobby: {ex.Message}");
                 Debug.LogError($"Error joining private lobby: {ex.Message}");
             }
         }
