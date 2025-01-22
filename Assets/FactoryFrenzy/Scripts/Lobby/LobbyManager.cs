@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Unity.Netcode;
+//using Unity.Services.Analytics;
+using Unity.Services.Core;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class LobbyManager : MonoBehaviour
     public TMP_Text NameLobby;
     public TMP_Text Timer;
     [SerializeField] private PlayerDataManager PlayerDataManager;
+    public Button LaunchButton;
     public Button Server;
     public Button Host;
     public Button Client;
@@ -41,13 +44,17 @@ public class LobbyManager : MonoBehaviour
     private static GameObject _previousLayout;
     private static GameObject _currentLayout;
 
-    void Start()
+    async void Start()
     {
+        await UnityServices.InitializeAsync();
         NetworkLayout.SetActive(true);
+        Lobby.SetActive(false);
 
         string lobbyName = PlayerPrefs.GetString("Lobby Name", "No Name");
         NameLobby.text = lobbyName;
         OnRefresh();
+        bool isHost = PlayerDataManager.Players.Exists(p => p.PlayerID == PlayerDataManager.CurrentPlayerID && p.IsHost);
+        LaunchButton.gameObject.SetActive(isHost);
     }
 
     public void StartTimer()
@@ -71,7 +78,7 @@ public class LobbyManager : MonoBehaviour
         else
         {
             isCountingDown = false;
-            SceneManager.LoadSceneAsync("TrapTest");
+            TransportToScene("TrapTest");
         }
     }
 
@@ -80,6 +87,18 @@ public class LobbyManager : MonoBehaviour
         isCountingDown = true;
         StartTimer();
         gameObject.GetComponent<Button>().interactable = false;
+        //SceneManager.LoadSceneAsync("TrapTest");
+    }
+
+    private void TransportToScene(string sceneName)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+            }
+        }
     }
 
     public void OnPlayerJoined()
@@ -122,13 +141,6 @@ public class LobbyManager : MonoBehaviour
         {
             Debug.LogWarning("PlayerDataManager instance not found!");
         }
-    }
-
-    public void StartServer()
-    {
-        NetworkManager.Singleton.StartServer();
-        NetworkLayout.SetActive(false);
-        Lobby.SetActive(true);
     }
 
     public void StartHost()
