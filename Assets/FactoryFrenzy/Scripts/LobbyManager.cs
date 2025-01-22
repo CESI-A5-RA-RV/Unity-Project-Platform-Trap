@@ -66,6 +66,7 @@ public class LobbyManager : MonoBehaviour
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(username.text);
         }
         Debug.Log("Unity Services Initialized");
         try{
@@ -95,6 +96,7 @@ public class LobbyManager : MonoBehaviour
             await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
+            PlayerPrefs.SetString("Lobby ID", lobby.Id);
             PlayerPrefs.Save();
 
             //endLevel.Initialized(lobby);
@@ -155,7 +157,7 @@ public class LobbyManager : MonoBehaviour
     }
 
     IEnumerator HeartbeatLobbyCoroutine(string lobbyId, float waitTimeSeconds)
-{
+    {
     var delay = new WaitForSecondsRealtime(waitTimeSeconds);
 
     while (true)
@@ -163,6 +165,6 @@ public class LobbyManager : MonoBehaviour
         LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
         yield return delay;
     }
-}
+    }
 
 }
