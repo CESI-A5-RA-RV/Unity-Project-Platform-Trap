@@ -45,7 +45,7 @@ public class EndLevel : NetworkBehaviour
             var playerId = other.GetComponent<NetworkObject>();
             if(!playerRanking.Contains(playerId.OwnerClientId)){
                 playerRanking.Add(playerId.OwnerClientId);
-                playerRankingName.Add(getPlayerName(playerId.OwnerClientId));
+                playerRankingName.Add(LobbyManager.Instance.getPlayerName(playerId.OwnerClientId));
                 int rank = playerRanking.Count;
 
                 NotifyPlayerRankClientRpc(playerId.OwnerClientId, rank);
@@ -185,23 +185,6 @@ public class EndLevel : NetworkBehaviour
         return currentLobby;
     }
 
-    private string getPlayerName(ulong clientId){
-        if(currentLobby == null || currentLobby.Players == null) return null;
-        Debug.LogWarning(clientId);
-        foreach(KeyValuePair<ulong, string> items in lobbyManager.clientIdToLobbyId){
-            Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
-        } 
-        if(lobbyManager.clientIdToLobbyId.TryGetValue(clientId, out string lobbyPlayerId)){
-            Debug.LogWarning(lobbyPlayerId);
-            Player player = currentLobby.Players.Find(p => p.Id == lobbyPlayerId);
-            if (player != null && player.Data.ContainsKey("Username"))
-            {
-            return player.Data["Username"].Value;
-            }
-        }
-
-        return "Unknown player";
-         
-    }
+    
 
 }

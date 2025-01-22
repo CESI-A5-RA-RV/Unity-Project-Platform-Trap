@@ -11,7 +11,7 @@ using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LobbyManager : MonoBehaviour
+public class LobbyManager : NetworkBehaviour
 {
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
@@ -19,10 +19,24 @@ public class LobbyManager : MonoBehaviour
 
     public RelayManager relayManager;
     public RelayClient relayClient;
+    public static LobbyManager Instance {get; private set;}
 
     public Dictionary<ulong, string> clientIdToLobbyId = new Dictionary<ulong, string>();
 
     private Lobby lobby;
+
+    private void Awake(){
+        if(Instance == null){
+            Instance = this;
+            if(IsServer){
+                DontDestroyOnLoad(gameObject);
+            }
+            
+        }
+        else{
+            Destroy(gameObject);
+        }
+    }
 
     private void Start(){
         if(NetworkManager.Singleton != null){
@@ -39,7 +53,7 @@ public class LobbyManager : MonoBehaviour
         username.text = $"Player{UnityEngine.Random.Range(1, 999)}";
     }
 
-    private void OnDestroy(){
+    private void OnDisable(){
         if(NetworkManager.Singleton != null){
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.Singleton.OnServerStopped -= OnHostStopped;
@@ -145,14 +159,6 @@ public class LobbyManager : MonoBehaviour
             ulong localClientId = NetworkManager.Singleton.LocalClientId;
             string lobbyPlayerId = AuthenticationService.Instance.PlayerId;
 
-            if (!clientIdToLobbyId.ContainsKey(localClientId))
-            {
-                clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
-                foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
-                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
-                } 
-            }
-
             await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
 
             if (joinedLobby.Data.ContainsKey("relayJoinCode"))
@@ -160,7 +166,14 @@ public class LobbyManager : MonoBehaviour
                 string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
                 Debug.Log($"Found relayJoinCode: {relayJoinCode}");
                 await relayClient.StartClientWithHost(relayJoinCode);
-            
+
+                if (!clientIdToLobbyId.ContainsKey(localClientId))
+                {
+                clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
+                foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
+                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
+                } 
+                }
             }
             else
             {
@@ -193,6 +206,48 @@ public class LobbyManager : MonoBehaviour
         LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
         yield return delay;
     }
+    }
+
+    public string getPlayerName(ulong clientId){
+        if(lobby == null || lobby.Players == null) return null;
+        Debug.LogWarning(clientId);
+        foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
+            Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
+        } 
+        if(clientIdToLobbyId.TryGetValue(clientId, out string lobbyPlayerId)){
+            Debug.LogWarning(lobbyPlayerId);
+            Player player = lobby.Players.Find(p => p.Id == lobbyPlayerId);
+            if (player != null && player.Data.ContainsKey("Username"))
+            {
+            return player.Data["Username"].Value;
+            }
+        }
+
+        return "Unknown player";
+         
+    }
+
+    public void AddPlayerToDictionary(ulong clientId, string lobbyPlayerId)
+    {
+        if (!clientIdToLobbyId.ContainsKey(clientId))
+        {
+            clientIdToLobbyId[clientId] = lobbyPlayerId;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AddPlayerToDictionaryServerRpc(ulong clientId, string lobbyPlayerId){
+        if(IsServer){
+            AddPlayerToDictionary(clientId, lobbyPlayerId);
+            UpdateClientsClientRpc(clientId, lobbyPlayerId);
+        }
+        
+    }
+
+    [ClientRpc]
+    private void UpdateClientsClientRpc(ulong clientId, string lobbyPlayerId)
+    {
+        AddPlayerToDictionary(clientId, lobbyPlayerId);
     }
 
 }
