@@ -2028,7 +2028,6 @@ MonoBehaviour:
   username: {fileID: 163788923}
   relayManager: {fileID: 736402533}
   relayClient: {fileID: 736402534}
-  endLevel: {fileID: 0}
 --- !u!114 &736402536
 MonoBehaviour:
   m_ObjectHideFlags: 0

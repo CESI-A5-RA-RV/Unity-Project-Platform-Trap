@@ -1059,7 +1059,7 @@ MonoBehaviour:
   Victory_TMP: {fileID: 543208259}
   countdownMenu: {fileID: 1347869284}
   RankingMenu: {fileID: 407978030}
-  rankingItem: {fileID: 356310144713987926, guid: c33232ca7161cc445b936367a3e19282,
+  rankingItem: {fileID: 3617576095142558087, guid: f398bd7f19f6c574fb43ac93aebd4199,
     type: 3}
   parentRanking: {fileID: 1442399360}
 --- !u!65 &710460629

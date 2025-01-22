@@ -20,7 +20,7 @@ public class LobbyManager : MonoBehaviour
     public RelayManager relayManager;
     public RelayClient relayClient;
 
-    [SerializeField] private EndLevel endLevel;
+    public Dictionary<ulong, string> clientIdToLobbyId = new Dictionary<ulong, string>();
 
     private Lobby lobby;
 
@@ -59,6 +59,7 @@ public class LobbyManager : MonoBehaviour
     private void OnHostStopped(bool state){
         if(NetworkManager.Singleton.IsHost){
             Debug.Log("Lobby deleted");
+            clientIdToLobbyId.Clear();
             LobbyService.Instance.DeleteLobbyAsync(lobby.Id);
         }
     }
@@ -93,6 +94,15 @@ public class LobbyManager : MonoBehaviour
                     value: AuthenticationService.Instance.PlayerName
                 )}
             };
+
+            ulong localClientId = NetworkManager.Singleton.LocalClientId;
+            string lobbyPlayerId = AuthenticationService.Instance.PlayerId;
+
+            if (!clientIdToLobbyId.ContainsKey(localClientId))
+            {
+                clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
+            }
+
             await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
@@ -113,6 +123,7 @@ public class LobbyManager : MonoBehaviour
         if(!AuthenticationService.Instance.IsSignedIn){
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
             await AuthenticationService.Instance.UpdatePlayerNameAsync(username.text);
+            
         }
         Debug.Log("Unity Services Initialized");
         try{
@@ -127,6 +138,15 @@ public class LobbyManager : MonoBehaviour
                     value: AuthenticationService.Instance.PlayerName
                 )}
             };
+
+            ulong localClientId = NetworkManager.Singleton.LocalClientId;
+            string lobbyPlayerId = AuthenticationService.Instance.PlayerId;
+
+            if (!clientIdToLobbyId.ContainsKey(localClientId))
+            {
+                clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
+            }
+
             await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
 
             if (joinedLobby.Data.ContainsKey("relayJoinCode"))

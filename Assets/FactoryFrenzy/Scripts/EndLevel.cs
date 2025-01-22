@@ -19,6 +19,8 @@ public class EndLevel : NetworkBehaviour
 
     [SerializeField] private GameObject rankingItem;
 
+    LobbyManager lobbyManager;
+
     public Transform parentRanking;
 
     private ThirdPersonController playerController;
@@ -30,11 +32,10 @@ public class EndLevel : NetworkBehaviour
     private List<string> playerOut = new List<string>();
     private bool countdownStarted = false;
     private int countdownStart = 5;
-    private string username;
     async void Start(){
         countdownMenu.SetActive(false);
         currentLobby = await getLobby();
-        username = getPlayerName();
+        lobbyManager = GameObject.Find("MenuManager").GetComponent<LobbyManager>();
     }
 
     private void OnTriggerEnter(Collider other){
@@ -44,8 +45,7 @@ public class EndLevel : NetworkBehaviour
             var playerId = other.GetComponent<NetworkObject>();
             if(!playerRanking.Contains(playerId.OwnerClientId)){
                 playerRanking.Add(playerId.OwnerClientId);
-                Debug.Log($"Final name {username}");
-                playerRankingName.Add(username);
+                playerRankingName.Add(getPlayerName(playerId.OwnerClientId));
                 int rank = playerRanking.Count;
 
                 NotifyPlayerRankClientRpc(playerId.OwnerClientId, rank);
@@ -90,7 +90,6 @@ public class EndLevel : NetworkBehaviour
         yield return new WaitForSeconds(0.5f);
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient networkClient))
         {
-            Debug.LogWarning($"Client ID: {clientId}");
             NetworkObject networkObject = networkClient.PlayerObject;
             playerController = networkObject.GetComponent<ThirdPersonController>();
             playerController.DisableMovementClientRpc();
@@ -124,11 +123,17 @@ public class EndLevel : NetworkBehaviour
         Debug.Log("Start ranking");
         
         int noRank = playerRanking.Count + 1;
-        foreach (var name in currentLobby.Players){
+        foreach(var name in currentLobby.Players){
             if(!playerRankingName.Contains(name.Data["Username"].Value)){
                 playerOut.Add(name.Data["Username"].Value);
             }
         }
+        for(int i = 0; i < playerRankingName.Count; i++){
+            Debug.LogWarning(playerRankingName[i]);
+        } 
+        for(int i = 0; i < playerOut.Count; i++){
+            Debug.LogWarning(playerOut[i]);
+        } 
         
         NotifyFinalRankingsClientRpc(new NetworkStringArray {Array = playerRankingName.ToArray()}, noRank, new NetworkStringArray {Array = playerOut.ToArray()});
         StartCoroutine(returnToLobby());
@@ -180,19 +185,20 @@ public class EndLevel : NetworkBehaviour
         return currentLobby;
     }
 
-    private string getPlayerName(){
-        string playerID = AuthenticationService.Instance.PlayerId;
-        string playerName;
-        Debug.LogWarning($"PlayerId: {playerID}");
-        foreach(var player in currentLobby.Players){
-            if(player.Id == playerID){
-                playerName = player.Data["Username"].Value;
-                Debug.LogWarning($"name: {playerName}");
-                return playerName;
+    private string getPlayerName(ulong clientId){
+        if(currentLobby == null || currentLobby.Players == null) return null;
+        Debug.LogWarning(clientId);
+        if(lobbyManager.clientIdToLobbyId.TryGetValue(clientId, out string lobbyPlayerId)){
+            Debug.LogWarning(lobbyPlayerId);
+            Player player = currentLobby.Players.Find(p => p.Id == lobbyPlayerId);
+            if (player != null && player.Data.ContainsKey("Username"))
+            {
+            return player.Data["Username"].Value;
             }
         }
-        return null;
-        
+
+        return "Unknown player";
+         
     }
 
 }
