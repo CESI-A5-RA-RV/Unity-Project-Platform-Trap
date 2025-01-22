@@ -99,7 +99,7 @@ public class LobbyManager : MonoBehaviour
 
             //endLevel.Initialized(lobby);
 
-            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene("TrapTest", LoadSceneMode.Single);
 
         }catch(Exception e){
             Debug.LogError(e);
@@ -123,7 +123,7 @@ public class LobbyManager : MonoBehaviour
                     value: username.text
                 )}
             };
-            await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
+            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
 
             if (joinedLobby.Data.ContainsKey("relayJoinCode"))
             {
