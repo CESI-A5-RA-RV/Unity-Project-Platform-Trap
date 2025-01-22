@@ -97,7 +97,7 @@ public class LobbyManager : MonoBehaviour
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
             PlayerPrefs.Save();
 
-            endLevel.Initialized(lobby);
+            //endLevel.Initialized(lobby);
 
             NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
 
