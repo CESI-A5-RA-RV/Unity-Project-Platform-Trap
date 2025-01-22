@@ -7,6 +7,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Lobbies;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
+using System.Linq;
 
 public class EndLevel : NetworkBehaviour
 { // Nom des joueurs
@@ -24,17 +25,14 @@ public class EndLevel : NetworkBehaviour
 
     private Lobby currentLobby;
 
-    private Dictionary<ulong, string> playerRanking = new Dictionary<ulong, string>();
+    private List<ulong> playerRanking = new List<ulong>();
+    private List<string> playerRankingName = new List<string>();
     private List<string> playerOut = new List<string>();
     private bool countdownStarted = false;
     private int countdownStart = 5;
     async void Start(){
         countdownMenu.SetActive(false);
-        await getLobby();
-    }
-
-    public void Initialized(Lobby lobby){
-        currentLobby = lobby;
+        currentLobby = await getLobby();
     }
 
     private void OnTriggerEnter(Collider other){
@@ -42,8 +40,9 @@ public class EndLevel : NetworkBehaviour
 
         if(other.gameObject.CompareTag("Player")){
             var playerId = other.GetComponent<NetworkObject>();
-            if(!playerRanking.ContainsKey(playerId.OwnerClientId)){
-                playerRanking.Add(playerId.OwnerClientId, AuthenticationService.Instance.PlayerName);
+            if(!playerRanking.Contains(playerId.OwnerClientId)){
+                playerRanking.Add(playerId.OwnerClientId);
+                playerRankingName.Add(AuthenticationService.Instance.PlayerName);
                 int rank = playerRanking.Count;
 
                 NotifyPlayerRankClientRpc(playerId.OwnerClientId, rank);
@@ -122,42 +121,41 @@ public class EndLevel : NetworkBehaviour
         Debug.Log("Start ranking");
         
         int noRank = playerRanking.Count + 1;
-        foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds){
-            if(!playerRanking.ContainsKey(clientId)){
+        foreach (var name in currentLobby.Players){
+            if(!playerRankingName.Contains(name.Data["Username"].Value)){
                 //block player's movements
-                playerOut.Add(clientId.ToString());
+                playerOut.Add(name.Data["Username"].Value);
             }
         }
         
-        NotifyFinalRankingsClientRpc(noRank);
+        NotifyFinalRankingsClientRpc(new NetworkStringArray {Array = playerRankingName.ToArray()}, noRank, new NetworkStringArray {Array = playerOut.ToArray()});
         StartCoroutine(returnToLobby());
     }
 
     [ClientRpc]
-    private void NotifyFinalRankingsClientRpc(int noRank)
+    private void NotifyFinalRankingsClientRpc(NetworkStringArray finalRankings, int noRank, NetworkStringArray eliminatedPlayers)
     {
         countdownMenu.SetActive(false);
         RankingMenu.SetActive(true);
         Debug.Log("Final Rankings:");
-        int i = 1;
-        foreach(var key in playerRanking.Keys){
+        
+        for(int i = 0; i < finalRankings.Array.Length; i++){
             //Add UI for ranking
-            
             GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
             newItem.SetActive(true);
             TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
             //Debug.LogWarning($"Rank Index number: {i}");
-            rankingTexts.text = $"Rank {i} - {playerRanking[key]}";
-            i++;
+            rankingTexts.text = $"Rank {i + 1} - {finalRankings.Array[i]}";
+        
         }
         
-        foreach(var j in playerOut){
+        for(int j = 0; j < eliminatedPlayers.Array.Length; j++){
             //Add UI for disqualified/eliminated players
             GameObject newItem = Instantiate(rankingItem, rankingItem.transform.position ,rankingItem.transform.rotation, parentRanking);
             newItem.SetActive(true);
             TMP_Text rankingTexts = newItem.GetComponent<TMP_Text>();
             //Debug.LogWarning($"Eliminated Index number: {i}");
-            rankingTexts.text = $"Rank {noRank} - {j}";
+            rankingTexts.text = $"Rank {noRank} - {eliminatedPlayers.Array[j]}";
                 
         }
             
