@@ -101,6 +101,9 @@ public class LobbyManager : MonoBehaviour
             if (!clientIdToLobbyId.ContainsKey(localClientId))
             {
                 clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
+                foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
+                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
+                } 
             }
 
             await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
@@ -145,6 +148,9 @@ public class LobbyManager : MonoBehaviour
             if (!clientIdToLobbyId.ContainsKey(localClientId))
             {
                 clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
+                foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
+                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
+                } 
             }
 
             await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);

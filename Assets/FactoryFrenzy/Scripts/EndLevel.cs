@@ -188,6 +188,9 @@ public class EndLevel : NetworkBehaviour
     private string getPlayerName(ulong clientId){
         if(currentLobby == null || currentLobby.Players == null) return null;
         Debug.LogWarning(clientId);
+        foreach(KeyValuePair<ulong, string> items in lobbyManager.clientIdToLobbyId){
+            Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
+        } 
         if(lobbyManager.clientIdToLobbyId.TryGetValue(clientId, out string lobbyPlayerId)){
             Debug.LogWarning(lobbyPlayerId);
             Player player = currentLobby.Players.Find(p => p.Id == lobbyPlayerId);
