@@ -28,10 +28,7 @@ public class LobbyManager : NetworkBehaviour
     private void Awake(){
         if(Instance == null){
             Instance = this;
-            if(IsServer){
                 DontDestroyOnLoad(gameObject);
-            }
-            
         }
         else{
             Destroy(gameObject);
@@ -161,7 +158,6 @@ public class LobbyManager : NetworkBehaviour
                 Debug.Log($"Found relayJoinCode: {relayJoinCode}");
                 await relayClient.StartClientWithHost(relayJoinCode);
 
-                AddPlayerToDictionaryServerRpc(localClientId, lobbyPlayerId);
             }
             else
             {
