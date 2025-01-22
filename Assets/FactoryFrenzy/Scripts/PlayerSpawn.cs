@@ -7,9 +7,13 @@ using UnityEngine.SceneManagement;
 public class PlayerSpawn : NetworkBehaviour
 {
     GameObject startLine;
+    GameObject prefab;
 
     void Start(){
         startLine = GameObject.FindGameObjectWithTag("Start");
+        prefab = GameObject.FindGameObjectWithTag("Player");
+        AssignSpawnPositions();
+        prefab.transform.position = startLine.transform.position;
     }
     
     public void AssignSpawnPositions(){

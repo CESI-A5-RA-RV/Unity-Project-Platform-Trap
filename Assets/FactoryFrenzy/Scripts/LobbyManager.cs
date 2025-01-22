@@ -112,12 +112,14 @@ public class LobbyManager : MonoBehaviour
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(username.text);
         }
         Debug.Log("Unity Services Initialized");
         try{
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
-
+            PlayerPrefs.SetString("Lobby ID", lobby.Id);
+            PlayerPrefs.Save();
             UpdatePlayerOptions playerOptions = new UpdatePlayerOptions();
             playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
                 {"Username", new PlayerDataObject(
