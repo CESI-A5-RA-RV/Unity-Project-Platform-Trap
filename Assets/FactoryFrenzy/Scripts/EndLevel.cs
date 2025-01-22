@@ -44,8 +44,8 @@ public class EndLevel : NetworkBehaviour
             var playerId = other.GetComponent<NetworkObject>();
             if(!playerRanking.Contains(playerId.OwnerClientId)){
                 playerRanking.Add(playerId.OwnerClientId);
-                Debug.Log(AuthenticationService.Instance.PlayerName);
-                playerRankingName.Add(AuthenticationService.Instance.PlayerName);
+                Debug.Log($"Final name {username}");
+                playerRankingName.Add(username);
                 int rank = playerRanking.Count;
 
                 NotifyPlayerRankClientRpc(playerId.OwnerClientId, rank);
@@ -176,16 +176,23 @@ public class EndLevel : NetworkBehaviour
 
     private async Task<Lobby> getLobby(){
         string lobbyId = PlayerPrefs.GetString("Lobby ID");
-        string playerID = AuthenticationService.Instance.PlayerId;
-        Debug.LogWarning($"PlayerId: {playerID}");
         Lobby currentLobby = await LobbyService.Instance.GetLobbyAsync(lobbyId);
         return currentLobby;
     }
 
     private string getPlayerName(){
-        string playerName = AuthenticationService.Instance.PlayerName;
-        Debug.LogWarning($"name: {playerName}");
-        return playerName;
+        string playerID = AuthenticationService.Instance.PlayerId;
+        string playerName;
+        Debug.LogWarning($"PlayerId: {playerID}");
+        foreach(var player in currentLobby.Players){
+            if(player.Id == playerID){
+                playerName = player.Data["Username"].Value;
+                Debug.LogWarning($"name: {playerName}");
+                return playerName;
+            }
+        }
+        return null;
+        
     }
 
 }
