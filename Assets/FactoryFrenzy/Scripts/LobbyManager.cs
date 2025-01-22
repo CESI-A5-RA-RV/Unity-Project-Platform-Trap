@@ -90,7 +90,7 @@ public class LobbyManager : MonoBehaviour
             playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
                 {"Username", new PlayerDataObject(
                     visibility: PlayerDataObject.VisibilityOptions.Member,
-                    value: username.text
+                    value: AuthenticationService.Instance.PlayerName
                 )}
             };
             await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
@@ -124,7 +124,7 @@ public class LobbyManager : MonoBehaviour
             playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
                 {"Username", new PlayerDataObject(
                     visibility: PlayerDataObject.VisibilityOptions.Member,
-                    value: username.text
+                    value: AuthenticationService.Instance.PlayerName
                 )}
             };
             await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);

@@ -30,9 +30,11 @@ public class EndLevel : NetworkBehaviour
     private List<string> playerOut = new List<string>();
     private bool countdownStarted = false;
     private int countdownStart = 5;
+    private string username;
     async void Start(){
         countdownMenu.SetActive(false);
         currentLobby = await getLobby();
+        username = getPlayerName();
     }
 
     private void OnTriggerEnter(Collider other){
@@ -42,6 +44,7 @@ public class EndLevel : NetworkBehaviour
             var playerId = other.GetComponent<NetworkObject>();
             if(!playerRanking.Contains(playerId.OwnerClientId)){
                 playerRanking.Add(playerId.OwnerClientId);
+                Debug.Log(AuthenticationService.Instance.PlayerName);
                 playerRankingName.Add(AuthenticationService.Instance.PlayerName);
                 int rank = playerRanking.Count;
 
@@ -123,7 +126,6 @@ public class EndLevel : NetworkBehaviour
         int noRank = playerRanking.Count + 1;
         foreach (var name in currentLobby.Players){
             if(!playerRankingName.Contains(name.Data["Username"].Value)){
-                //block player's movements
                 playerOut.Add(name.Data["Username"].Value);
             }
         }
@@ -175,10 +177,15 @@ public class EndLevel : NetworkBehaviour
     private async Task<Lobby> getLobby(){
         string lobbyId = PlayerPrefs.GetString("Lobby ID");
         string playerID = AuthenticationService.Instance.PlayerId;
-        string playerName = AuthenticationService.Instance.PlayerName;
-        Debug.LogWarning($"PlayerId: {playerID} and name: {playerName}");
+        Debug.LogWarning($"PlayerId: {playerID}");
         Lobby currentLobby = await LobbyService.Instance.GetLobbyAsync(lobbyId);
         return currentLobby;
+    }
+
+    private string getPlayerName(){
+        string playerName = AuthenticationService.Instance.PlayerName;
+        Debug.LogWarning($"name: {playerName}");
+        return playerName;
     }
 
 }
