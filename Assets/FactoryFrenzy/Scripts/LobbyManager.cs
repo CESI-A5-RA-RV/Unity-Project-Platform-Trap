@@ -112,13 +112,7 @@ public class LobbyManager : NetworkBehaviour
             ulong localClientId = NetworkManager.Singleton.LocalClientId;
             string lobbyPlayerId = AuthenticationService.Instance.PlayerId;
 
-            if (!clientIdToLobbyId.ContainsKey(localClientId))
-            {
-                clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
-                foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
-                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
-                } 
-            }
+            AddPlayerToDictionaryServerRpc(localClientId, lobbyPlayerId);
 
             await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
@@ -167,13 +161,7 @@ public class LobbyManager : NetworkBehaviour
                 Debug.Log($"Found relayJoinCode: {relayJoinCode}");
                 await relayClient.StartClientWithHost(relayJoinCode);
 
-                if (!clientIdToLobbyId.ContainsKey(localClientId))
-                {
-                clientIdToLobbyId.Add(localClientId, lobbyPlayerId);
-                foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
-                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
-                } 
-                }
+                AddPlayerToDictionaryServerRpc(localClientId, lobbyPlayerId);
             }
             else
             {
@@ -208,30 +196,14 @@ public class LobbyManager : NetworkBehaviour
     }
     }
 
-    public string getPlayerName(ulong clientId){
-        if(lobby == null || lobby.Players == null) return null;
-        Debug.LogWarning(clientId);
-        foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
-            Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
-        } 
-        if(clientIdToLobbyId.TryGetValue(clientId, out string lobbyPlayerId)){
-            Debug.LogWarning(lobbyPlayerId);
-            Player player = lobby.Players.Find(p => p.Id == lobbyPlayerId);
-            if (player != null && player.Data.ContainsKey("Username"))
-            {
-            return player.Data["Username"].Value;
-            }
-        }
-
-        return "Unknown player";
-         
-    }
-
     public void AddPlayerToDictionary(ulong clientId, string lobbyPlayerId)
     {
         if (!clientIdToLobbyId.ContainsKey(clientId))
         {
             clientIdToLobbyId[clientId] = lobbyPlayerId;
+            foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
+                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
+            }
         }
     }
 
