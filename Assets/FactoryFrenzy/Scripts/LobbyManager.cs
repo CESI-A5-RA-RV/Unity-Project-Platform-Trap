@@ -118,7 +118,7 @@ public class LobbyManager : MonoBehaviour
         try{
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
-            PlayerPrefs.SetString("Lobby ID", lobby.Id);
+            PlayerPrefs.SetString("Lobby ID", joinedLobby.Id);
             PlayerPrefs.Save();
             UpdatePlayerOptions playerOptions = new UpdatePlayerOptions();
             playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
