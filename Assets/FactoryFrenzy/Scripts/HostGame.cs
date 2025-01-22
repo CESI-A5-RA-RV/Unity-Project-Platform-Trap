@@ -7,6 +7,7 @@ using TMPro;
 public class HostGame : MonoBehaviour
 {
     public GameObject menu;
+    [SerializeField] public TMP_InputField username;
 
     void Start(){
         menu.SetActive(true);

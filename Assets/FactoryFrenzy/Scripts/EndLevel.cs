@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
-using Unity.Services.Lobbies.Models;
-using Unity.Services.Lobbies;
-using System.Threading.Tasks;
-using Unity.Services.Authentication;
-using System.Linq;
 
 public class EndLevel : NetworkBehaviour
-{ // Nom des joueurs
+{
 
     [SerializeField] private TMP_Text Countdown_TMP;
     [SerializeField] private TMP_Text Victory_TMP;
@@ -25,17 +20,13 @@ public class EndLevel : NetworkBehaviour
 
     private ThirdPersonController playerController;
 
-    private Lobby currentLobby;
-
     private List<ulong> playerRanking = new List<ulong>();
     private List<string> playerRankingName = new List<string>();
     private List<string> playerOut = new List<string>();
     private bool countdownStarted = false;
     private int countdownStart = 5;
-    async void Start(){
+    void Start(){
         countdownMenu.SetActive(false);
-        currentLobby = await getLobby();
-        lobbyManager = GameObject.Find("MenuManager").GetComponent<LobbyManager>();
     }
 
     private void OnTriggerEnter(Collider other){
@@ -43,9 +34,10 @@ public class EndLevel : NetworkBehaviour
 
         if(other.gameObject.CompareTag("Player")){
             var playerId = other.GetComponent<NetworkObject>();
+            var playerData = playerId.GetComponent<PlayerData>();
             if(!playerRanking.Contains(playerId.OwnerClientId)){
                 playerRanking.Add(playerId.OwnerClientId);
-                playerRankingName.Add(getPlayerName(playerId.OwnerClientId));
+                playerRankingName.Add(playerData.playerName.text);
                 int rank = playerRanking.Count;
 
                 NotifyPlayerRankClientRpc(playerId.OwnerClientId, rank);
@@ -123,17 +115,13 @@ public class EndLevel : NetworkBehaviour
         Debug.Log("Start ranking");
         
         int noRank = playerRanking.Count + 1;
-        foreach(var name in currentLobby.Players){
-            if(!playerRankingName.Contains(name.Data["Username"].Value)){
-                playerOut.Add(name.Data["Username"].Value);
+        foreach(var pClient in NetworkManager.Singleton.ConnectedClientsList){
+            NetworkObject pObject = pClient.PlayerObject;
+            PlayerData pData = pObject.GetComponent<PlayerData>();
+            if(!playerRankingName.Contains(pData.playerName.text)){
+                playerOut.Add(pData.playerName.text);
             }
         }
-        for(int i = 0; i < playerRankingName.Count; i++){
-            Debug.LogWarning(playerRankingName[i]);
-        } 
-        for(int i = 0; i < playerOut.Count; i++){
-            Debug.LogWarning(playerOut[i]);
-        } 
         
         NotifyFinalRankingsClientRpc(new NetworkStringArray {Array = playerRankingName.ToArray()}, noRank, new NetworkStringArray {Array = playerOut.ToArray()});
         StartCoroutine(returnToLobby());
@@ -178,30 +166,5 @@ public class EndLevel : NetworkBehaviour
         }
         NetworkManager.SceneManager.LoadScene("LobbyEmpty", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
-
-    private async Task<Lobby> getLobby(){
-        string lobbyId = PlayerPrefs.GetString("Lobby ID");
-        Lobby currentLobby = await LobbyService.Instance.GetLobbyAsync(lobbyId);
-        return currentLobby;
-    }
-
-    public string getPlayerName(ulong clientId){
-        if(currentLobby == null || currentLobby.Players == null) return null;
-        Debug.LogWarning(clientId);
-        foreach(KeyValuePair<ulong, string> items in LobbyManager.Instance.clientIdToLobbyId){
-            Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
-        } 
-        if(LobbyManager.Instance.clientIdToLobbyId.TryGetValue(clientId, out string lobbyPlayerId)){
-            Debug.LogWarning(lobbyPlayerId);
-            Player player = currentLobby.Players.Find(p => p.Id == lobbyPlayerId);
-            if (player != null && player.Data.ContainsKey("Username"))
-            {
-            return player.Data["Username"].Value;
-            }
-        }
-
-        return "Unknown player";
-         
-    }
-
+  
 }

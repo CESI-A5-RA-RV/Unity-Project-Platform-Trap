@@ -11,7 +11,7 @@ using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LobbyManager : NetworkBehaviour
+public class LobbyManager : MonoBehaviour
 {
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
@@ -19,21 +19,8 @@ public class LobbyManager : NetworkBehaviour
 
     public RelayManager relayManager;
     public RelayClient relayClient;
-    public static LobbyManager Instance {get; private set;}
-
-    public Dictionary<ulong, string> clientIdToLobbyId = new Dictionary<ulong, string>();
 
     private Lobby lobby;
-
-    private void Awake(){
-        if(Instance == null){
-            Instance = this;
-                DontDestroyOnLoad(gameObject);
-        }
-        else{
-            Destroy(gameObject);
-        }
-    }
 
     private void Start(){
         if(NetworkManager.Singleton != null){
@@ -47,7 +34,6 @@ public class LobbyManager : NetworkBehaviour
                 }
             };
         }
-        username.text = $"Player{UnityEngine.Random.Range(1, 999)}";
     }
 
     private void OnDisable(){
@@ -70,7 +56,6 @@ public class LobbyManager : NetworkBehaviour
     private void OnHostStopped(bool state){
         if(NetworkManager.Singleton.IsHost){
             Debug.Log("Lobby deleted");
-            clientIdToLobbyId.Clear();
             LobbyService.Instance.DeleteLobbyAsync(lobby.Id);
         }
     }
@@ -78,7 +63,6 @@ public class LobbyManager : NetworkBehaviour
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(username.text);
         }
         Debug.Log("Unity Services Initialized");
         try{
@@ -98,26 +82,10 @@ public class LobbyManager : NetworkBehaviour
             lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName.text.ToString(), 10, options);
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
 
-            UpdatePlayerOptions playerOptions = new UpdatePlayerOptions();
-            playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
-                {"Username", new PlayerDataObject(
-                    visibility: PlayerDataObject.VisibilityOptions.Member,
-                    value: AuthenticationService.Instance.PlayerName
-                )}
-            };
-
-            ulong localClientId = NetworkManager.Singleton.LocalClientId;
-            string lobbyPlayerId = AuthenticationService.Instance.PlayerId;
-
-            AddPlayerToDictionaryServerRpc(localClientId, lobbyPlayerId);
-
-            await LobbyService.Instance.UpdatePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
             PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
             PlayerPrefs.SetString("Lobby ID", lobby.Id);
             PlayerPrefs.Save();
-
-            //endLevel.Initialized(lobby);
 
             NetworkManager.Singleton.SceneManager.LoadScene("TrapTest", LoadSceneMode.Single);
 
@@ -130,7 +98,6 @@ public class LobbyManager : NetworkBehaviour
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(username.text);
             
         }
         Debug.Log("Unity Services Initialized");
@@ -139,18 +106,6 @@ public class LobbyManager : NetworkBehaviour
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
             PlayerPrefs.SetString("Lobby ID", joinedLobby.Id);
             PlayerPrefs.Save();
-            UpdatePlayerOptions playerOptions = new UpdatePlayerOptions();
-            playerOptions.Data = new Dictionary<string, PlayerDataObject>(){
-                {"Username", new PlayerDataObject(
-                    visibility: PlayerDataObject.VisibilityOptions.Member,
-                    value: AuthenticationService.Instance.PlayerName
-                )}
-            };
-
-            ulong localClientId = NetworkManager.Singleton.LocalClientId;
-            string lobbyPlayerId = AuthenticationService.Instance.PlayerId;
-
-            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, playerOptions);
 
             if (joinedLobby.Data.ContainsKey("relayJoinCode"))
             {
@@ -192,30 +147,5 @@ public class LobbyManager : NetworkBehaviour
     }
     }
 
-    public void AddPlayerToDictionary(ulong clientId, string lobbyPlayerId)
-    {
-        if (!clientIdToLobbyId.ContainsKey(clientId))
-        {
-            clientIdToLobbyId[clientId] = lobbyPlayerId;
-            foreach(KeyValuePair<ulong, string> items in clientIdToLobbyId){
-                    Debug.LogWarning($"Key: {items.Key} and Value: {items.Value}");
-            }
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void AddPlayerToDictionaryServerRpc(ulong clientId, string lobbyPlayerId){
-        if(IsServer){
-            AddPlayerToDictionary(clientId, lobbyPlayerId);
-            UpdateClientsClientRpc(clientId, lobbyPlayerId);
-        }
-        
-    }
-
-    [ClientRpc]
-    private void UpdateClientsClientRpc(ulong clientId, string lobbyPlayerId)
-    {
-        AddPlayerToDictionary(clientId, lobbyPlayerId);
-    }
 
 }
