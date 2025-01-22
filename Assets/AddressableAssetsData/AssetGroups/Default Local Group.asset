@@ -52,6 +52,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7cffddcbc0cc8f4ebe6e28eb9804082
+    m_Address: Assets/FPSFont/FPS Gaming Font/Square-Black.ttf
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eac2e128ec83cff40ae9c74a5da924bc
     m_Address: PLA END
     m_ReadOnly: 0
