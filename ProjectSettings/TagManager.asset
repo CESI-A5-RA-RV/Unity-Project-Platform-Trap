@@ -9,6 +9,8 @@ TagManager:
   - Ground
   - Obstcales
   - Start
+  - Menu
+  - SpawnTag
   layers:
   - Default
   - TransparentFX

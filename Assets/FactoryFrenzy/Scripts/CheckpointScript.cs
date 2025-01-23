@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CheckpointScript : MonoBehaviour
+public class CheckpointScript : NetworkBehaviour
 {
     public Renderer targetRenderer;
     public Color colorOnActivated = Color.green;
     public Color colorOnDeactivated = Color.red;
 
-    Deathzone deathzone;
-    KillPlayer killPlayer;
-
     private void Start()
     {
+<<<<<<< HEAD
         deathzone = GameObject.Find("Deathzone").GetComponent<Deathzone>();
         //killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
+=======
+
+>>>>>>> origin/main
         targetRenderer.material.EnableKeyword("_EMISSION");
 
         targetRenderer.material.SetColor("_BaseColor", colorOnDeactivated);
@@ -23,13 +25,34 @@ public class CheckpointScript : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.transform.gameObject.tag == "Player" && targetRenderer != null)
+        if(!IsServer) return;
+        if (other.transform.gameObject.tag == "Player")
         {
-            deathzone.respawnPositions = gameObject.transform.position;
-            killPlayer.lastCheckpoint = gameObject.transform.position;
+            var playerData = other.GetComponent<PlayerData>();
+            playerData.networkPlayerCheckpoint.Value = gameObject.transform.position;
 
-            targetRenderer.material.SetColor("_BaseColor", colorOnActivated);
-            targetRenderer.material.SetColor("_EmissionColor", colorOnActivated);
+            var player = other.GetComponent<NetworkObject>();
+            if(player != null){
+                ulong playerId = player.OwnerClientId;
+                UpdataCheckpointStateClientRpc(playerId, true);
+
+                foreach(ulong otherPlayerId in NetworkManager.Singleton.ConnectedClientsIds){
+                    if(otherPlayerId != playerId){
+                        UpdataCheckpointStateClientRpc(otherPlayerId, false);
+                    }
+                }
+            }
+
+            
+        }
+    }
+
+    [ClientRpc]
+    private void UpdataCheckpointStateClientRpc(ulong playerId, bool isActive, ClientRpcParams clientRpcParams = default){
+        if(NetworkManager.Singleton.LocalClientId == playerId){
+
+            targetRenderer.material.SetColor("_BaseColor", isActive ? colorOnActivated : colorOnDeactivated);
+            targetRenderer.material.SetColor("_EmissionColor", isActive ? colorOnActivated : colorOnDeactivated);
         }
     }
 }

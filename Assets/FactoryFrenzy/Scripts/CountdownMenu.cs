@@ -12,21 +12,15 @@ public class CountdownMenu : MonoBehaviour
 
     private int countdownStart = 10;
     private string display;
-    Deathzone deathzone;
-    KillPlayer killPlayer;
 
     void Start(){
         countdownMenu.SetActive(false);
         goMessage.SetActive(false);
         countdownStart = 10;
-        deathzone = GameObject.Find("Deathzone").GetComponent<Deathzone>();
-        killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
     }
 
     private void OnTriggerEnter(Collider other){
         if(other.gameObject.CompareTag("Player")){
-            deathzone.respawnPositions = gameObject.transform.position;
-            killPlayer.lastCheckpoint = gameObject.transform.position;
             ThirdPersonController playerMove = other.GetComponent<ThirdPersonController>();
             StartCoroutine(startCountdown(playerMove));
         }
@@ -35,7 +29,7 @@ public class CountdownMenu : MonoBehaviour
     private IEnumerator startCountdown(ThirdPersonController player){
         int countdown = countdownStart;
         while (countdown > 0){
-            player.DisableMovement();
+            player.DisableMovementClientRpc(false);
             
             if(countdown < 6){
                 display = countdown.ToString();
@@ -51,7 +45,7 @@ public class CountdownMenu : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 countdownMenu.SetActive(false);
                 barrier.SetActive(false);
-                player.EnableMovement();
+                player.EnableMovementClientRpc();
             }
         }
           

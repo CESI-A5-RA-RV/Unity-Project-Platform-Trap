@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class KillPlayer : MonoBehaviour
 {
-    public Vector3 lastCheckpoint;
     private GameObject player;
     private Rigidbody rbPlayer;
     // Start is called before the first frame update
@@ -13,18 +12,19 @@ public class KillPlayer : MonoBehaviour
                 // get player that entered the zone
                 player = other.gameObject;
                 rbPlayer = player.GetComponent<Rigidbody>();
+                PlayerData playerData = player.GetComponent<PlayerData>();
                 Animator playerAnimator = other.GetComponent<Animator>();
                 if(playerAnimator != null && rbPlayer != null){
                     rbPlayer.velocity = Vector3.zero;
                     rbPlayer.isKinematic = true;
                     playerAnimator.SetTrigger("Death");
                 }
-                Invoke(nameof(RespawnPlayer), 1.5f);
+                StartCoroutine(RespawnPlayer(playerData));
     }
 
-    private void RespawnPlayer()
-    {
-        player.transform.position = lastCheckpoint;
+    private IEnumerator RespawnPlayer(PlayerData playerData)
+    {   yield return new WaitForSeconds(1.5f);
+        player.transform.position = playerData.playerCheckpoint;
         rbPlayer.isKinematic = false;
     }
 }

@@ -78,12 +78,19 @@ public class ThirdPersonController : NetworkBehaviour
         return Physics.Raycast(ray, out _, 0.3f);
     }
 
-    public void EnableMovement(){
+    [ClientRpc]
+    public void EnableMovementClientRpc(){
         canMove = true;
     }
-
-    public void DisableMovement(){
+    [ClientRpc]
+     public void DisableMovementClientRpc(bool bubble){
         canMove = false;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        if(!bubble){
+            animator.SetFloat("speed", 0);
+        }
+        
     }
 
     private void FixedUpdate()

@@ -62,7 +62,7 @@ public class PauseMenu : MonoBehaviour
     public void ChangeScene(){
         isPaused = false;
         if(NetworkManager.Singleton.IsHost){
-            NetworkManager.Singleton.SceneManager.LoadScene("AvatarTest", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene("AvatarTest", LoadSceneMode.Single);
         }
         
     }
