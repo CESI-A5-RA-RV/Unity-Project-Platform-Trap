@@ -14,7 +14,7 @@ public class CheckpointScript : MonoBehaviour
     private void Start()
     {
         deathzone = GameObject.Find("Deathzone").GetComponent<Deathzone>();
-        killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
+        //killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
         targetRenderer.material.EnableKeyword("_EMISSION");
 
         targetRenderer.material.SetColor("_BaseColor", colorOnDeactivated);

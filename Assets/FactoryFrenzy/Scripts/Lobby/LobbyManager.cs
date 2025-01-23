@@ -47,14 +47,14 @@ public class LobbyManager : MonoBehaviour
     async void Start()
     {
         await UnityServices.InitializeAsync();
-        NetworkLayout.SetActive(true);
-        Lobby.SetActive(false);
+        //NetworkLayout.SetActive(true);
+        Lobby.SetActive(true);
 
         string lobbyName = PlayerPrefs.GetString("Lobby Name", "No Name");
         NameLobby.text = lobbyName;
         OnRefresh();
-        bool isHost = PlayerDataManager.Players.Exists(p => p.PlayerID == PlayerDataManager.CurrentPlayerID && p.IsHost);
-        LaunchButton.gameObject.SetActive(isHost);
+        //bool isHost = PlayerDataManager.Players.Exists(p => p.PlayerID == PlayerDataManager.CurrentPlayerID && p.IsHost);
+        //LaunchButton.gameObject.SetActive(isHost);
     }
 
     public void StartTimer()
@@ -86,8 +86,8 @@ public class LobbyManager : MonoBehaviour
     {
         isCountingDown = true;
         StartTimer();
-        gameObject.GetComponent<Button>().interactable = false;
-        //SceneManager.LoadSceneAsync("TrapTest");
+        //gameObject.GetComponent<Button>().interactable = false;
+        SceneManager.LoadSceneAsync("TrapTest");
     }
 
     private void TransportToScene(string sceneName)

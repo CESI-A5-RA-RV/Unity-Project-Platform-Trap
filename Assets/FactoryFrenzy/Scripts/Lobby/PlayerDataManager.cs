@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Services.CloudSave; 
-using Unity.Services.Authentication; 
+using Unity.Services.Authentication;
+using Unity.Services.Core;
 
 public class PlayerDataManager : MonoBehaviour
 {
@@ -40,6 +41,7 @@ public class PlayerDataManager : MonoBehaviour
 
     private async void Start()
     {
+        UnityServices.InitializeAsync();
         // Authenticate player
         if (!AuthenticationService.Instance.IsSignedIn)
         {
