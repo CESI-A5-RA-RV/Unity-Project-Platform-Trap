@@ -11,6 +11,8 @@ TagManager:
   - Start
   - Menu
   - SpawnTag
+  - Platform
+  - Impact
   layers:
   - Default
   - TransparentFX

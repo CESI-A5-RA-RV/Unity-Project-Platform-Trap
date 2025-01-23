@@ -9,6 +9,11 @@ public class CountdownMenu : MonoBehaviour
     [SerializeField] private TMP_Text Countdown_TMP;
     [SerializeField] private GameObject goMessage;
     [SerializeField] private GameObject barrier;
+    AudioSource[] audioSource;
+
+    AudioSource raceStart;
+    AudioSource countdownStartSound;
+    AudioSource count;
     private bool countdownStarted = false;
 
     private int countdownStart = 10;
@@ -17,6 +22,10 @@ public class CountdownMenu : MonoBehaviour
     void Start(){
         countdownMenu.SetActive(false);
         goMessage.SetActive(false);
+        audioSource = gameObject.GetComponents<AudioSource>();
+        raceStart = audioSource[0];
+        countdownStartSound = audioSource[1];
+        count = audioSource[2];
     }
 
     private void OnTriggerEnter(Collider other){
@@ -32,6 +41,7 @@ public class CountdownMenu : MonoBehaviour
 
     private IEnumerator startCountdown(ThirdPersonController player){
         int countdown = countdownStart;
+        countdownStartSound.Play();
         while (countdown > 0){
             player.DisableMovementClientRpc(false);
             
@@ -41,11 +51,13 @@ public class CountdownMenu : MonoBehaviour
             }
 
             countdown--;
+            count.Play();
             countdownMenu.SetActive(true);
             yield return new WaitForSeconds(1f);
             if(countdown == 0){
                 Countdown_TMP.text = "";
                 goMessage.SetActive(true);
+                raceStart.Play();
                 yield return new WaitForSeconds(1f);
                 countdownMenu.SetActive(false);
                 barrier.SetActive(false);
