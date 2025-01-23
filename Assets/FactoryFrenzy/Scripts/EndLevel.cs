@@ -84,7 +84,7 @@ public class EndLevel : NetworkBehaviour
         {
             NetworkObject networkObject = networkClient.PlayerObject;
             playerController = networkObject.GetComponent<ThirdPersonController>();
-            playerController.DisableMovementClientRpc();
+            playerController.DisableMovementClientRpc(false);
         }
         else{
             Debug.LogWarning("Player not identified, can't disable movement");

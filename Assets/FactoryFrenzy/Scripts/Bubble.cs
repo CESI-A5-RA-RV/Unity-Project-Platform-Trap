@@ -36,7 +36,7 @@ public class Bubble : MonoBehaviour
         playerTrapped = true;
         // Stop the player's velocity
         rbPlayer.velocity *= 0f;
-        player.DisableMovementClientRpc();
+        player.DisableMovementClientRpc(true);
         
         playerPosition.position = transform.position + new UnityEngine.Vector3(0f, -0.75f, 0f);
 

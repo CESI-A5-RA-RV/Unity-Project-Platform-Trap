@@ -10,6 +10,7 @@ TagManager:
   - Obstcales
   - Start
   - Menu
+  - SpawnTag
   layers:
   - Default
   - TransparentFX

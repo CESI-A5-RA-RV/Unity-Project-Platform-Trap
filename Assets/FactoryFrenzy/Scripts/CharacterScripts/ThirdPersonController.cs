@@ -83,11 +83,14 @@ public class ThirdPersonController : NetworkBehaviour
         canMove = true;
     }
     [ClientRpc]
-     public void DisableMovementClientRpc(){
+     public void DisableMovementClientRpc(bool bubble){
         canMove = false;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        animator.SetFloat("speed", 0);
+        if(!bubble){
+            animator.SetFloat("speed", 0);
+        }
+        
     }
 
     private void FixedUpdate()
