@@ -3329,6 +3329,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4944935972476834645, guid: e2eadfeaada97154c9e1e385323c43a5,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8500535871758778899, guid: e2eadfeaada97154c9e1e385323c43a5,
         type: 3}
       propertyPath: bounceForce

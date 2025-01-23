@@ -6,6 +6,8 @@ public class KillPlayer : MonoBehaviour
 {
     private GameObject player;
     private Rigidbody rbPlayer;
+
+    AudioSource audioSource;
     // Start is called before the first frame update
     public void Kill(Collider other)
     {
@@ -14,10 +16,12 @@ public class KillPlayer : MonoBehaviour
                 rbPlayer = player.GetComponent<Rigidbody>();
                 PlayerData playerData = player.GetComponent<PlayerData>();
                 Animator playerAnimator = other.GetComponent<Animator>();
+                audioSource = other.GetComponent<AudioSource>();
                 if(playerAnimator != null && rbPlayer != null){
                     rbPlayer.velocity = Vector3.zero;
                     rbPlayer.isKinematic = true;
                     playerAnimator.SetTrigger("Death");
+                    audioSource.Play();
                 }
                 StartCoroutine(RespawnPlayer(playerData));
     }

@@ -37,8 +37,6 @@ public class CheckpointScript : NetworkBehaviour
                     }
                 }
             }
-
-            
         }
     }
 
