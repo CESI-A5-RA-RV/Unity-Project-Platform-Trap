@@ -32,11 +32,13 @@ using UnityEngine;
 
 public class Deathzone : MonoBehaviour
 {
+    AudioSource audioSource;
     void OnTriggerEnter(Collider other)
     {
         if (other.transform.gameObject.tag == "Player")
-        {
+        {   audioSource = gameObject.GetComponent<AudioSource>();
             PlayerData playerData = other.GetComponent<PlayerData>();
+            audioSource.Play();
             other.transform.position = playerData.playerCheckpoint;
         }
     }

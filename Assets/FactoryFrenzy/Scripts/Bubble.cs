@@ -12,11 +12,16 @@ public class Bubble : MonoBehaviour
     private bool playerTrapped = false;
 
     private BubbleSpawner spawner;
-    AudioSource audioSource;
+    AudioSource bubbleDrown;
+    AudioSource bubblePop;
+
 
     private void Start(){
         spawner = FindObjectOfType<BubbleSpawner>();
-        audioSource = gameObject.GetComponent<AudioSource>();
+        AudioSource[] audioSource = gameObject.GetComponents<AudioSource>();
+        bubbleDrown = audioSource[0];
+        bubblePop = audioSource[1];
+        
     }
 
     private void OnTriggerEnter(Collider collider){
@@ -25,7 +30,7 @@ public class Bubble : MonoBehaviour
             Rigidbody player = collider.gameObject.GetComponent<Rigidbody>();
             ThirdPersonController playerMove = collider.GetComponent<ThirdPersonController>();
             if(playerMove != null){
-                audioSource.Play();
+                bubbleDrown.Play();
                 StartCoroutine(StopPlayer(player, playerMove,  collider.transform)); 
             }
         }
@@ -53,6 +58,7 @@ public class Bubble : MonoBehaviour
 
         // Return the player's velocity to the original speed
         player.EnableMovementClientRpc();
+        bubblePop.Play();
         playerTrapped = false;
         if(playerAnimator != null){
             playerAnimator.ResetTrigger("StuckBubble");
