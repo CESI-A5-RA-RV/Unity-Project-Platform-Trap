@@ -34,46 +34,19 @@ public class PlayerSpawn : NetworkBehaviour
         foreach(var clientId in NetworkManager.Singleton.ConnectedClientsIds){
             var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             if(player != null && i < spawns.Length){
-                var networkTransform = player.GetComponent<NetworkTransform>();
-                if(networkTransform != null){
-                    player.transform.position = spawns[i].transform.position;
-                    player.transform.rotation = spawns[i].transform.rotation;
-                }
+                TeleportPlayersClientRpc(player.NetworkObjectId, spawns[i].transform.position, spawns[i].transform.rotation);
+                i++;
             }
         }
     }
-    
-    public void AssignSpawnPositions(){
-       int playerIndex = 0;
-
-       foreach(ulong clientId in NetworkManager.Singleton.ConnectedClientsIds){
-        Vector3 spawnPosition = GetSpawnPosition(playerIndex);
-        AssignSpawnPositionToPlayer(clientId, spawnPosition);
-        playerIndex++;
-        Debug.LogWarning($"Spawn assisgned for {clientId}");
-       }
-    }
-
-    private Vector3 GetSpawnPosition(int index){
-        //Range between startLine x
-        return transform.position;
-    }
-
-    private void AssignSpawnPositionToPlayer(ulong clientId, Vector3 position){
-        var clientParams = new ClientRpcParams{
-            Send = new ClientRpcSendParams{
-                TargetClientIds = new[] {clientId}
-            }
-        };
-        SpawnClientRpc(position, clientParams);
-    }
-
 
     [ClientRpc]
-    private void SpawnClientRpc(Vector3 position, ClientRpcParams clientRpcParams = default){
-        if(IsOwner){
-            Debug.LogWarning("Teleporting player");
-            transform.position = position;
-        }
+    private void TeleportPlayersClientRpc(ulong objectId, Vector3 position, Quaternion rotation){
+        var player = NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectId];
+        if(player != null){
+            player.transform.position = position;
+            player.transform.rotation = rotation;
+        }               
     }
+    
 }

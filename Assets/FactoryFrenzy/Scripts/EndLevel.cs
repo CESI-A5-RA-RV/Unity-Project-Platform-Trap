@@ -24,7 +24,7 @@ public class EndLevel : NetworkBehaviour
     private List<string> playerRankingName = new List<string>();
     private List<string> playerOut = new List<string>();
     private bool countdownStarted = false;
-    private int countdownStart = 5;
+    private int countdownStart = 30;
     void Start(){
         countdownMenu.SetActive(false);
     }

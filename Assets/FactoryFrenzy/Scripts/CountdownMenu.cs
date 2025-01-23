@@ -9,6 +9,7 @@ public class CountdownMenu : MonoBehaviour
     [SerializeField] private TMP_Text Countdown_TMP;
     [SerializeField] private GameObject goMessage;
     [SerializeField] private GameObject barrier;
+    private bool countdownStarted = false;
 
     private int countdownStart = 10;
     private string display;
@@ -16,13 +17,16 @@ public class CountdownMenu : MonoBehaviour
     void Start(){
         countdownMenu.SetActive(false);
         goMessage.SetActive(false);
-        countdownStart = 10;
     }
 
     private void OnTriggerEnter(Collider other){
         if(other.gameObject.CompareTag("Player")){
             ThirdPersonController playerMove = other.GetComponent<ThirdPersonController>();
-            StartCoroutine(startCountdown(playerMove));
+            if(!countdownStarted){
+                countdownStarted = true;
+                StartCoroutine(startCountdown(playerMove));
+            }
+            
         }
     }
 
@@ -36,7 +40,7 @@ public class CountdownMenu : MonoBehaviour
                 Countdown_TMP.text = display;
             }
 
-            countdown -= 1;
+            countdown--;
             countdownMenu.SetActive(true);
             yield return new WaitForSeconds(1f);
             if(countdown == 0){
