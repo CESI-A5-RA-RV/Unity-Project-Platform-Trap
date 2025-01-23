@@ -12,21 +12,15 @@ public class CountdownMenu : MonoBehaviour
 
     private int countdownStart = 10;
     private string display;
-    Deathzone deathzone;
-    KillPlayer killPlayer;
 
     void Start(){
         countdownMenu.SetActive(false);
         goMessage.SetActive(false);
         countdownStart = 10;
-        deathzone = GameObject.Find("Deathzone").GetComponent<Deathzone>();
-        killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
     }
 
     private void OnTriggerEnter(Collider other){
         if(other.gameObject.CompareTag("Player")){
-            deathzone.respawnPositions = gameObject.transform.position;
-            killPlayer.lastCheckpoint = gameObject.transform.position;
             ThirdPersonController playerMove = other.GetComponent<ThirdPersonController>();
             StartCoroutine(startCountdown(playerMove));
         }

@@ -7,13 +7,10 @@ using UnityEngine.SceneManagement;
 public class PlayerSpawn : NetworkBehaviour
 {
     GameObject startLine;
-    GameObject prefab;
 
     void Start(){
         startLine = GameObject.FindGameObjectWithTag("Start");
-        prefab = GameObject.FindGameObjectWithTag("Player");
         AssignSpawnPositions();
-        prefab.transform.position = startLine.transform.position;
     }
     
     public void AssignSpawnPositions(){
@@ -23,6 +20,7 @@ public class PlayerSpawn : NetworkBehaviour
         Vector3 spawnPosition = GetSpawnPosition(playerIndex);
         AssignSpawnPositionToPlayer(clientId, spawnPosition);
         playerIndex++;
+        Debug.LogWarning($"Spawn assisgned for {clientId}");
        }
     }
 
@@ -37,7 +35,6 @@ public class PlayerSpawn : NetworkBehaviour
                 TargetClientIds = new[] {clientId}
             }
         };
-
         SpawnClientRpc(position, clientParams);
     }
 
@@ -45,6 +42,7 @@ public class PlayerSpawn : NetworkBehaviour
     [ClientRpc]
     private void SpawnClientRpc(Vector3 position, ClientRpcParams clientRpcParams = default){
         if(IsOwner){
+            Debug.LogWarning("Teleporting player");
             transform.position = position;
         }
     }

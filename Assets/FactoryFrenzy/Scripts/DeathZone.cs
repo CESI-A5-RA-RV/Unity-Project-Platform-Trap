@@ -32,14 +32,12 @@ using UnityEngine;
 
 public class Deathzone : MonoBehaviour
 {
-
-    public Vector3 respawnPositions;
-
     void OnTriggerEnter(Collider other)
     {
         if (other.transform.gameObject.tag == "Player")
         {
-            other.transform.position = respawnPositions;
+            PlayerData playerData = other.GetComponent<PlayerData>();
+            other.transform.position = playerData.playerCheckpoint;
         }
     }
 }

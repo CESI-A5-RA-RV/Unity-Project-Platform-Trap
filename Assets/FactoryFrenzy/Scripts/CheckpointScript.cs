@@ -9,13 +9,9 @@ public class CheckpointScript : NetworkBehaviour
     public Color colorOnActivated = Color.green;
     public Color colorOnDeactivated = Color.red;
 
-    Deathzone deathzone;
-    KillPlayer killPlayer;
-
     private void Start()
     {
-        deathzone = GameObject.Find("Deathzone").GetComponent<Deathzone>();
-        killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
+
         targetRenderer.material.EnableKeyword("_EMISSION");
 
         targetRenderer.material.SetColor("_BaseColor", colorOnDeactivated);
@@ -27,8 +23,8 @@ public class CheckpointScript : NetworkBehaviour
         if(!IsServer) return;
         if (other.transform.gameObject.tag == "Player")
         {
-            deathzone.respawnPositions = gameObject.transform.position;
-            killPlayer.lastCheckpoint = gameObject.transform.position;
+            var playerData = other.GetComponent<PlayerData>();
+            playerData.networkPlayerCheckpoint.Value = gameObject.transform.position;
 
             var player = other.GetComponent<NetworkObject>();
             if(player != null){
