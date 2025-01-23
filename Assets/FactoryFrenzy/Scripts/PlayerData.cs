@@ -15,8 +15,8 @@ public class PlayerData : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if(IsOwner){
-            //networkPlayerName.Value = GameObject.Find("MenuManager").GetComponent<LobbyManager>().username.text;
-            networkPlayerName.Value = GameObject.Find("GameManager").GetComponent<HostGame>().username.text;
+            networkPlayerName.Value = GameObject.Find("MenuManager").GetComponent<LobbyManager>().username.text;
+            //networkPlayerName.Value = GameObject.Find("GameManager").GetComponent<HostGame>().username.text;
             networkPlayerCheckpoint.Value = GameObject.FindGameObjectWithTag("Start").transform.position;
         }
         playerName.text = networkPlayerName.Value.ToString();
