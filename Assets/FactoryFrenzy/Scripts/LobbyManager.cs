@@ -87,7 +87,7 @@ public class LobbyManager : MonoBehaviour
             PlayerPrefs.SetString("Lobby ID", lobby.Id);
             PlayerPrefs.Save();
 
-            NetworkManager.Singleton.SceneManager.LoadScene("TrapTest", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
 
         }catch(Exception e){
             Debug.LogError(e);

@@ -29,6 +29,15 @@ public class PauseMenu : MonoBehaviour
                 PauseGame();
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.Tab)){
+            if(isPaused){
+                ResumeGame();
+            }
+            else{
+                PauseGame();
+            }
+        }
     }
 
     public void PauseGame(){
@@ -63,6 +72,14 @@ public class PauseMenu : MonoBehaviour
         isPaused = false;
         if(NetworkManager.Singleton.IsHost){
             NetworkManager.Singleton.SceneManager.LoadScene("AvatarTest", LoadSceneMode.Single);
+        }
+        
+    }
+
+    public void StartGame(){
+        isPaused = false;
+        if(NetworkManager.Singleton.IsHost){
+            NetworkManager.Singleton.SceneManager.LoadScene("TrapTest", LoadSceneMode.Single);
         }
         
     }

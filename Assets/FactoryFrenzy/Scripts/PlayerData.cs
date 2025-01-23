@@ -17,7 +17,7 @@ public class PlayerData : NetworkBehaviour
         if(IsOwner){
             networkPlayerName.Value = GameObject.Find("MenuManager").GetComponent<LobbyManager>().username.text;
             //networkPlayerName.Value = GameObject.Find("GameManager").GetComponent<HostGame>().username.text;
-            networkPlayerCheckpoint.Value = GameObject.FindGameObjectWithTag("Start").transform.position;
+            networkPlayerCheckpoint.Value = gameObject.transform.position;
         }
         playerName.text = networkPlayerName.Value.ToString();
         networkPlayerName.OnValueChanged += networkPlayerName_OnValueChanged;
