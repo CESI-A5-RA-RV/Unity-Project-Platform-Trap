@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,10 +13,15 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject pauseMenu;
     public CinemachineFreeLook cinemachineCamera;
+    public TMP_Text lobbyCode;
     // Start is called before the first frame update
     void Start()
     {
         pauseMenu.SetActive(false);
+        if(lobbyCode != null){
+            lobbyCode.text = PlayerPrefs.GetString("Lobby Code");
+        }
+        
     }
 
     // Update is called once per frame
@@ -82,5 +88,17 @@ public class PauseMenu : MonoBehaviour
             NetworkManager.Singleton.SceneManager.LoadScene("TrapTest", LoadSceneMode.Single);
         }
         
+    }
+
+    public void returnToLobby(){
+        if(NetworkManager.Singleton.IsHost){
+            NetworkManager.Singleton.SceneManager.LoadScene("LobbyEmpty", LoadSceneMode.Single);
+        }
+    }
+
+    public void GotoLevelEditor(){
+        if(NetworkManager.Singleton.IsHost){
+            NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
+        }
     }
 }

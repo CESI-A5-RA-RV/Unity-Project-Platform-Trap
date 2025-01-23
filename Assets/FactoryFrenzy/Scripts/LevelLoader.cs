@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LevelLoader : MonoBehaviour
 {
-    [SerializeField] public int selectedLevelId;
     [SerializeField] private List<LevelElement> elementPrefabs;
     private Dictionary<string, LevelElement> prefabDictionary;
 
     private void Start()
     {
+        var selectedLevelId = GameObject.Find("GameManager").GetComponent<LevelSelector>();
         prefabDictionary = new Dictionary<string, LevelElement>();
         foreach (var prefab in elementPrefabs)
         {
@@ -24,7 +24,7 @@ public class LevelLoader : MonoBehaviour
 
         MultiLevelData multiLevelData = JsonUtility.FromJson<MultiLevelData>(json);
 
-        LevelData selectedLevel = multiLevelData.levels.Find(level => level.id == selectedLevelId);
+        LevelData selectedLevel = multiLevelData.levels.Find(level => level.id == selectedLevelId.levelId);
 
         if (selectedLevel != null)
         {
