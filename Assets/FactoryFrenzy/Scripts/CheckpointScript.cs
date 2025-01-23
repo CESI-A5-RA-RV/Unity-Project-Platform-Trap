@@ -10,13 +10,7 @@ public class CheckpointScript : NetworkBehaviour
     public Color colorOnDeactivated = Color.red;
 
     private void Start()
-    {
-<<<<<<< HEAD
-        deathzone = GameObject.Find("Deathzone").GetComponent<Deathzone>();
-        //killPlayer = GameObject.Find("GameManager").GetComponent<KillPlayer>();
-=======
-
->>>>>>> origin/main
+    {        
         targetRenderer.material.EnableKeyword("_EMISSION");
 
         targetRenderer.material.SetColor("_BaseColor", colorOnDeactivated);

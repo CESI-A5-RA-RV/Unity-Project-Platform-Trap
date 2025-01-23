@@ -10,17 +10,23 @@ using Unity.Services.Lobbies.Models;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour
 {
     public TMP_Text lobbyCode;
     public TMP_Text lobbyName;
     public TMP_Text username;
+    [SerializeField] public TMP_Dropdown TypeLobby;
+    [SerializeField] public TMP_InputField NameInput;
 
     public RelayManager relayManager;
     public RelayClient relayClient;
 
     private Lobby lobby;
+
+    public Transform lobbyListContent;
+    public GameObject lobbyListItemPrefab;
 
     private void Start(){
         if(NetworkManager.Singleton != null){
@@ -59,6 +65,7 @@ public class LobbyManager : MonoBehaviour
             LobbyService.Instance.DeleteLobbyAsync(lobby.Id);
         }
     }
+
     public async void createLobby(){
         await UnityServices.InitializeAsync();
         if(!AuthenticationService.Instance.IsSignedIn){
@@ -71,7 +78,12 @@ public class LobbyManager : MonoBehaviour
             PlayerPrefs.Save();
 
             CreateLobbyOptions options = new CreateLobbyOptions();
-            options.IsPrivate = true;
+
+            if (TypeLobby.options[TypeLobby.value].text == "Private")
+            {
+                options.IsPrivate = true;
+            }
+            
             options.Data = new Dictionary<string, DataObject>(){
                 {"relayJoinCode", new DataObject(
                     visibility: DataObject.VisibilityOptions.Member,
@@ -83,11 +95,17 @@ public class LobbyManager : MonoBehaviour
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
 
             Debug.Log($"Lobby created with code: {lobby.LobbyCode}");
-            PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
+
+            if (TypeLobby.options[TypeLobby.value].text == "Private")
+            {
+                PlayerPrefs.SetString("Lobby Code", lobby.LobbyCode);
+            }
+                        
             PlayerPrefs.SetString("Lobby ID", lobby.Id);
             PlayerPrefs.Save();
+            
 
-            NetworkManager.Singleton.SceneManager.LoadScene("TrapTest", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
 
         }catch(Exception e){
             Debug.LogError(e);
@@ -96,12 +114,14 @@ public class LobbyManager : MonoBehaviour
 
     private async void JoinLobby(string lobbyCode){
         await UnityServices.InitializeAsync();
-        if(!AuthenticationService.Instance.IsSignedIn){
+        if (!AuthenticationService.Instance.IsSignedIn)
+        {
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            
+
         }
         Debug.Log("Unity Services Initialized");
-        try{
+        try
+        {
             lobbyCode = CleanLobbyCode(lobbyCode);
             Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
             PlayerPrefs.SetString("Lobby ID", joinedLobby.Id);
@@ -118,12 +138,15 @@ public class LobbyManager : MonoBehaviour
             {
                 Debug.LogError("The key 'relayJoinCode' was not found in the lobby data.");
             }
-            
-        }catch(LobbyServiceException e){
+
+        }
+        catch (LobbyServiceException e)
+        {
             Debug.Log(e.Message);
         }
     }
 
+   
     private string CleanLobbyCode(string lobbyCode)
     {
         // Remove zero-width space (U+200B) and any other non-printable characters
@@ -138,14 +161,117 @@ public class LobbyManager : MonoBehaviour
 
     IEnumerator HeartbeatLobbyCoroutine(string lobbyId, float waitTimeSeconds)
     {
-    var delay = new WaitForSecondsRealtime(waitTimeSeconds);
+        var delay = new WaitForSecondsRealtime(waitTimeSeconds);
 
-    while (true)
+        while (true)
+        {
+            LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
+            yield return delay;
+        }
+    }
+
+    public async void FetchPublicLobbies()
     {
-        LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
-        yield return delay;
-    }
+        try
+        {
+            Debug.Log("Fetching public lobbies...");
+
+            
+            await UnityServices.InitializeAsync();
+
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                Debug.Log($"Signed in as: {AuthenticationService.Instance.PlayerId}");
+            }
+
+            
+            QueryLobbiesOptions options = new QueryLobbiesOptions
+            {
+                Count = 25, 
+                Filters = new List<QueryFilter>
+            {
+                
+                new QueryFilter(
+                    field: QueryFilter.FieldOptions.AvailableSlots,
+                    op: QueryFilter.OpOptions.GT,
+                    value: "0")
+            },
+                Order = new List<QueryOrder>
+            {
+                
+                new QueryOrder(
+                    asc: false,
+                    field: QueryOrder.FieldOptions.Created)
+            }
+            };
+
+            QueryResponse lobbyListQueryResponse = await LobbyService.Instance.QueryLobbiesAsync(options);
+
+            foreach (Transform child in lobbyListContent)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (Lobby lobby in lobbyListQueryResponse.Results)
+            {
+                GameObject lobbyItem = Instantiate(lobbyListItemPrefab, lobbyListContent);
+
+                TMP_Text lobbyNameText = lobbyItem.GetComponentInChildren<TMP_Text>();
+                lobbyNameText.text = lobby.Name;
+
+                Button joinButton = lobbyItem.GetComponentInChildren<Button>();
+                joinButton.onClick.AddListener(() => JoinLobbyById(lobby));
+            }
+
+            Debug.Log("Public lobbies fetched and displayed.");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to fetch public lobbies: {e.Message}");
+        }
     }
 
+    
+    private async void JoinLobbyById(Lobby lobby)
+    {
+        try
+        {
+            Debug.Log($"Joining lobby: {lobby.Name} (ID: {lobby.Id})");
 
+            await UnityServices.InitializeAsync();
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                Debug.Log($"Signed in as: {AuthenticationService.Instance.PlayerId}");
+            }
+
+            Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id);
+            Debug.Log($"Successfully joined lobby: {joinedLobby.Name}");
+
+            if (joinedLobby.Data.ContainsKey("relayJoinCode"))
+            {
+                string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
+                await relayClient.StartClientWithHost(relayJoinCode);
+            }
+            else
+            {
+                Debug.LogWarning("Relay join code not found in the lobby data.");
+            }
+
+            PlayerPrefs.SetString("Lobby ID", joinedLobby.Id);
+            PlayerPrefs.Save();
+
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to join lobby: {e.Message}");
+        }
+    }
+
+    public void OnRefreshButtonClicked()
+    {
+        FetchPublicLobbies();
+    }
 }

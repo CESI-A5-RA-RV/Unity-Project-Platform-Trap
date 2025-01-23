@@ -1,15 +1,11 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
-<<<<<<< HEAD
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
-<<<<<<< HEAD
 --- !u!1 &103342841974628738
 =======
 =======
 --- !u!1 &415198683990360367
 =======
 --- !u!1 &391527290785655570
->>>>>>> origin/main
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17,7 +13,6 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD
   - component: {fileID: 1947231611269899942}
   - component: {fileID: 8705761646030524379}
   - component: {fileID: 4488225198692446768}
@@ -143,7 +138,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
->>>>>>> origin/lucas:Assets/FactoryFrenzy/Prefabs/UI/UIGame.prefab
 --- !u!1 &613633877122611956
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,9 +149,7 @@ GameObject:
   - component: {fileID: 4611317573989801128}
   - component: {fileID: 8108596368769159121}
   - component: {fileID: 7039658137834351493}
-=======
   - component: {fileID: 4009939826057416326}
->>>>>>> origin/main
   m_Layer: 0
   m_Name: StartGameLayout
   m_TagString: Untagged
@@ -177,7 +169,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-<<<<<<< HEAD
   - {fileID: 4349910285445726849}
   m_Father: {fileID: 5871609224639066098}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -190,13 +181,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD
   - component: {fileID: 6534340453211580474}
   - component: {fileID: 7718464559145788495}
   - component: {fileID: 8967419664101879520}
   m_Layer: 0
   m_Name: Arrow
-=======
   - component: {fileID: 549700890924643025}
   - component: {fileID: 8418003724597719676}
   - component: {fileID: 8817946567462193103}
@@ -1348,7 +1337,6 @@ RectTransform:
   - {fileID: 7940356175133626529}
   - {fileID: 8762704258649165750}
   m_Father: {fileID: 8571754313637739708}
->>>>>>> origin/main
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1363,14 +1351,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD
   - component: {fileID: 8392275205443364956}
   - component: {fileID: 3708372908488051003}
   - component: {fileID: 9217609756721071957}
   - component: {fileID: 2213307519142815882}
   m_Layer: 5
   m_Name: ResumeButton
->>>>>>> origin/lucas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1390,17 +1376,14 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3376657264604919942}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -15, y: 0}
   m_SizeDelta: {x: 20, y: 20}
-=======
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
->>>>>>> origin/lucas
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7718464559145788495
 CanvasRenderer:
@@ -1786,11 +1769,8 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
-<<<<<<< HEAD
 --- !u!1 &807089842170521080
-=======
 --- !u!1 &5921803046158665398
->>>>>>> origin/lucas
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1798,35 +1778,29 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD
   - component: {fileID: 6373465621565704003}
   - component: {fileID: 7524204074588284653}
   - component: {fileID: 7753967236950953649}
   m_Layer: 0
   m_Name: Background
-=======
   - component: {fileID: 3967433519925032323}
   - component: {fileID: 4095904383773117004}
   - component: {fileID: 5349216527097626430}
   m_Layer: 0
   m_Name: Countdown
->>>>>>> origin/lucas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
 --- !u!224 &6373465621565704003
 =======
 --- !u!224 &3967433519925032323
->>>>>>> origin/lucas
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 807089842170521080}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1906,13 +1880,11 @@ RectTransform:
   m_GameObject: {fileID: 807660821571334098}
 =======
   m_GameObject: {fileID: 5921803046158665398}
->>>>>>> origin/lucas
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-<<<<<<< HEAD
   m_Father: {fileID: 9052192847294829111}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -1948,11 +1920,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
   m_text: Back
-=======
   m_text: Ready ?
->>>>>>> origin/lucas:Assets/FactoryFrenzy/Prefabs/UI/UIGame.prefab
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2021,9 +1990,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
 --- !u!1 &902746667847038949
-=======
 --- !u!1 &6322591495229874544
 GameObject:
   m_ObjectHideFlags: 0
@@ -2563,14 +2530,11 @@ RectTransform:
   - {fileID: 1655086763741364670}
   - {fileID: 7592254948378705682}
   m_Father: {fileID: 9081434273613526945}
-=======
   m_Father: {fileID: 4163886338160382100}
->>>>>>> origin/lucas
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-<<<<<<< HEAD
   m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3737316373115443900
@@ -4519,27 +4483,22 @@ RectTransform:
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4095904383773117004
->>>>>>> origin/lucas
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 3446715652159787830}
   m_CullTransparentMesh: 1
 --- !u!114 &3332503721362262958
-=======
   m_GameObject: {fileID: 5921803046158665398}
   m_CullTransparentMesh: 1
 --- !u!114 &5349216527097626430
->>>>>>> origin/lucas
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 3446715652159787830}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -5235,9 +5194,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3991084852766053123}
-=======
   m_GameObject: {fileID: 5921803046158665398}
->>>>>>> origin/lucas
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -5251,11 +5208,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-<<<<<<< HEAD
   m_text: Version
-=======
   m_text: 10
->>>>>>> origin/lucas
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5264,13 +5218,10 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-<<<<<<< HEAD
     rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
-=======
     rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
->>>>>>> origin/lucas
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5287,7 +5238,6 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-<<<<<<< HEAD
   m_fontSize: 18
   m_fontSizeBase: 18
   m_fontWeight: 400
@@ -5468,11 +5418,8 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
-<<<<<<< HEAD
 --- !u!1 &4148469545344352573
-=======
 --- !u!1 &6373716514819598284
->>>>>>> origin/lucas
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5480,36 +5427,29 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD
   - component: {fileID: 5358395130254672737}
   - component: {fileID: 730302840185055680}
   - component: {fileID: 8898989453173642119}
   m_Layer: 0
   m_Name: Background
-=======
   - component: {fileID: 4163886338160382100}
   - component: {fileID: 8104653983397771423}
   - component: {fileID: 8799045122810421580}
   - component: {fileID: 5180426806650257112}
   m_Layer: 0
   m_Name: Canvas
->>>>>>> origin/lucas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
 --- !u!224 &5358395130254672737
-=======
 --- !u!224 &4163886338160382100
->>>>>>> origin/lucas
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 4148469545344352573}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -5623,15 +5563,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4491147677371580587}
-=======
   m_GameObject: {fileID: 6373716514819598284}
->>>>>>> origin/lucas
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-<<<<<<< HEAD
   - {fileID: 5687607740983359764}
   - {fileID: 2238070845140525929}
   - {fileID: 4860554620618565275}
@@ -5640,32 +5577,24 @@ RectTransform:
   - {fileID: 602277450219422749}
   - {fileID: 918078459394913205}
   m_Father: {fileID: 5871609224639066098}
-=======
   - {fileID: 3967433519925032323}
   - {fileID: 4611317573989801128}
   m_Father: {fileID: 2670639093634147971}
->>>>>>> origin/lucas
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
-<<<<<<< HEAD
 --- !u!223 &4121064631225676135
-=======
 --- !u!223 &8104653983397771423
->>>>>>> origin/lucas
 Canvas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 4491147677371580587}
-=======
   m_GameObject: {fileID: 6373716514819598284}
->>>>>>> origin/lucas
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
@@ -5682,21 +5611,15 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
-<<<<<<< HEAD
 --- !u!114 &1619515955531785314
-=======
 --- !u!114 &8799045122810421580
->>>>>>> origin/lucas
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 4491147677371580587}
-=======
   m_GameObject: {fileID: 6373716514819598284}
->>>>>>> origin/lucas
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
@@ -5705,11 +5628,8 @@ MonoBehaviour:
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-<<<<<<< HEAD
   m_ReferenceResolution: {x: 1920, y: 1080}
-=======
   m_ReferenceResolution: {x: 800, y: 600}
->>>>>>> origin/lucas
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -5717,21 +5637,15 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
-<<<<<<< HEAD
 --- !u!114 &7724038157287859471
-=======
 --- !u!114 &5180426806650257112
->>>>>>> origin/lucas
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 4491147677371580587}
-=======
   m_GameObject: {fileID: 6373716514819598284}
->>>>>>> origin/lucas
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
@@ -5742,12 +5656,8 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
-<<<<<<< HEAD
 --- !u!1 &4508876442430274802
-=======
 --- !u!1 &6524925920834650087
->>>>>>> origin/lucas:Assets/FactoryFrenzy/Prefabs/UI/UIGame.prefab
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5755,46 +5665,36 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
   - component: {fileID: 9081434273613526945}
   m_Layer: 0
   m_Name: QuitLayout
-=======
   - component: {fileID: 5879902348942304550}
   - component: {fileID: 3855834605259658548}
   - component: {fileID: 7659969881681821631}
   - component: {fileID: 5448938202660452510}
   m_Layer: 5
   m_Name: Client
->>>>>>> origin/lucas:Assets/FactoryFrenzy/Prefabs/UI/UIGame.prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
   m_IsActive: 0
 --- !u!224 &9081434273613526945
-=======
   m_IsActive: 1
 --- !u!224 &5879902348942304550
->>>>>>> origin/lucas:Assets/FactoryFrenzy/Prefabs/UI/UIGame.prefab
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
   m_GameObject: {fileID: 4508876442430274802}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-=======
   m_GameObject: {fileID: 6524925920834650087}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
->>>>>>> origin/lucas:Assets/FactoryFrenzy/Prefabs/UI/UIGame.prefab
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-<<<<<<< HEAD:Assets/FactoryFrenzy/Prefabs/UI/UI.prefab
   - {fileID: 1814292364306838129}
   m_Father: {fileID: 9014375746094456238}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6804,7 +6704,7 @@ RectTransform:
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6548583901129465173
-=======
+
   - {fileID: 609502401479139308}
   m_Father: {fileID: 1166975262134012101}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6814,7 +6714,7 @@ RectTransform:
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3855834605259658548
->>>>>>> origin/lucas:Assets/FactoryFrenzy/Prefabs/UI/UIGame.prefab
+
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

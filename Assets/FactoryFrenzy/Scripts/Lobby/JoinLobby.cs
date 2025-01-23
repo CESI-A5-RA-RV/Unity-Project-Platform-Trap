@@ -4,32 +4,58 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MainMenu;
+using Unity.Netcode;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
+using UnityEditor.AssetImporters;
 
 public class JoinLobby : MonoBehaviour
 {
 
     [SerializeField] public TMP_Text NameLobby;
     [SerializeField] public TMP_Text TypeLobby;
+
+    public RelayClient relayClient;
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    public void OnJoin()
+    private async void OnJoin(Lobby lobby)
     {
-        string lobbyName = NameLobby.text;
-        string lobbyType = TypeLobby.text;
-
-
-        if (lobbyType == "Private")
+        await UnityServices.InitializeAsync();
+        if (!AuthenticationService.Instance.IsSignedIn)
         {
-            ShowCodeInput(true);
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
         }
-        else
+        Debug.Log("Unity Services Initialized");
+        try
+        {            
+            Lobby joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id);
+            PlayerPrefs.SetString("Lobby ID", joinedLobby.Id);
+            PlayerPrefs.Save();
+
+            if (joinedLobby.Data.ContainsKey("relayJoinCode"))
+            {
+                string relayJoinCode = joinedLobby.Data["relayJoinCode"].Value;
+                Debug.Log($"Found relayJoinCode: {relayJoinCode}");
+                await relayClient.StartClientWithHost(relayJoinCode);
+
+            }            
+            else
+            {
+                Debug.LogError("The key 'relayJoinCode' was not found in the lobby data.");
+            }
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+
+        }
+        catch (LobbyServiceException e)
         {
-            PlayerPrefs.SetString("Lobby Name", lobbyName);
-            SceneManager.LoadSceneAsync("Lobby");
+            Debug.Log(e.Message);
         }
     }
 
