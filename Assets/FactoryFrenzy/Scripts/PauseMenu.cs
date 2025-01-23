@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -78,9 +79,11 @@ public class PauseMenu : MonoBehaviour
 
     public void StartGame(){
         isPaused = false;
-        if(NetworkManager.Singleton.IsHost){
-            NetworkManager.Singleton.SceneManager.LoadScene("TrapTest", LoadSceneMode.Single);
-        }
+        // if(NetworkManager.Singleton.IsHost){
+        //     NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
+        // }
+        pauseMenu.SetActive(false);
+        SceneManager.LoadScene("Level");
         
     }
 }

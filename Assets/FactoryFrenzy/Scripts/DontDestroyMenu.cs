@@ -7,8 +7,7 @@ public class DontDestroyMenu : MonoBehaviour
     
     void Awake()
     {
-        GameObject menu = GameObject.FindGameObjectWithTag("Menu");
-        DontDestroyOnLoad(menu);
+        DontDestroyOnLoad(gameObject);
     }
 
     
