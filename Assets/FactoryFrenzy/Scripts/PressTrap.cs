@@ -17,7 +17,7 @@ public class PressTrap : MonoBehaviour
     }
 
     private void Update(){
-        if(transform.position.y < soundBox.transform.position.y){
+        if(transform.position.y > soundBox.transform.position.y){
             audioSource.PlayDelayed(0.25f);
         }
     }

@@ -19,6 +19,8 @@ public class Launcher : MonoBehaviour
     [SerializeField] float cooldownTime = 2f;
     [SerializeField] ParticleSystem shootParticles;
 
+    AudioSource audioSource;
+
     private float rotationDirection = 1f; // For back-and-forth rotation
     private float lastShotTime;
 
@@ -27,6 +29,7 @@ public class Launcher : MonoBehaviour
     {
         startRotation = transform.eulerAngles - new Vector3(0, 90, 0);
         endRotation = transform.eulerAngles + new Vector3(0, 90, 0);
+        audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -96,6 +99,7 @@ public class Launcher : MonoBehaviour
 
             // Spawn the projectile
             GameObject spawnedProjectile = Instantiate(projectile, shootingAxis.position, Quaternion.identity);
+            audioSource.Play();
             Rigidbody rb = spawnedProjectile.GetComponent<Rigidbody>();
 
             if (rb != null)

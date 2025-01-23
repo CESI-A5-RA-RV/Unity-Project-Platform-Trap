@@ -14,6 +14,8 @@ public class EndLevel : NetworkBehaviour
 
     [SerializeField] private GameObject rankingItem;
 
+    AudioSource audioSource;
+
     LobbyManager lobbyManager;
 
     public Transform parentRanking;
@@ -27,12 +29,14 @@ public class EndLevel : NetworkBehaviour
     private int countdownStart = 30;
     void Start(){
         countdownMenu.SetActive(false);
+        audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other){
         if(!IsServer) return;
 
         if(other.gameObject.CompareTag("Player")){
+            audioSource.Play();
             var playerId = other.GetComponent<NetworkObject>();
             var playerData = playerId.GetComponent<PlayerData>();
             if(!playerRanking.Contains(playerId.OwnerClientId)){

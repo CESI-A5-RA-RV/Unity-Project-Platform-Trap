@@ -9,6 +9,8 @@ public class FanObstacle : MonoBehaviour
     // private ParticleSystem windEffect; // Assign the wind particle system in the Inspector
     [SerializeField] private Transform windDirection; // Transform indicating the direction of the wind
 
+    AudioSource audioSource;
+
     private void OnTriggerStay(Collider other)
     {
         // Check if the object entering the fan's range is a player
@@ -47,6 +49,11 @@ public class FanObstacle : MonoBehaviour
             // windEffect.Play();
             // AdjustParticleEffect(windEffect, pushForce);
         // }
+        audioSource = gameObject.GetComponent<AudioSource>();
+    }
+
+    private void Update(){
+        audioSource.Play();
     }
 
     // Adjusts the length of the particle effect
