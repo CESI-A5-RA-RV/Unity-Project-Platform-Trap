@@ -16,12 +16,14 @@ public class MovingPlatform : LevelElement
         {
             foreach (var param in data.parameters)
             {
+                Debug.Log("Param key: " + param.key + " ; Param value: " + param.value );
                 if (param.key == "Speed")
                 {
                     movingWall.speed = param.value;
                 }
                 else if (param.key == "Range")
                 {
+                    Debug.Log(movingWall.speed);
                     movingWall.range = param.value;
                 }
             }

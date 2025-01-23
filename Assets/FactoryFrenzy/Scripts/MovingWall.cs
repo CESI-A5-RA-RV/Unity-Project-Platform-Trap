@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MovingWall : MonoBehaviour
 {
-
     public Vector3 movementDirection = Vector3.right; // Direction to move (e.g., right)
     public float speed = 2.0f;                        // Speed of movement
     public float range = 5.0f;                        // Total distance to move

@@ -16,14 +16,15 @@ public class LevelLoader : MonoBehaviour
             prefabDictionary[prefab.name] = prefab;
         }
 
-        string homeDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
-        string desktopPath = System.IO.Path.Combine(homeDirectory, "Desktop", "levelsV2.json");
+        string homePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+        string appDataPath = System.IO.Path.Combine(homePath, "AppData", "LocalLow");
+        string jsonFilePath = System.IO.Path.Combine(appDataPath, "DefaultCompany", "Platform-Trap-Level-Editor", "levels.json");
 
-        string json = System.IO.File.ReadAllText(desktopPath);
+        string json = System.IO.File.ReadAllText(jsonFilePath);
 
         MultiLevelData multiLevelData = JsonUtility.FromJson<MultiLevelData>(json);
 
-        LevelData selectedLevel = multiLevelData.levels.Find(level => level.id == selectedLevelId); // Example: Load level with ID 1
+        LevelData selectedLevel = multiLevelData.levels.Find(level => level.id == selectedLevelId);
 
         if (selectedLevel != null)
         {
@@ -40,6 +41,7 @@ public class LevelLoader : MonoBehaviour
     {
         foreach (var elementData in levelData.elements)
         {
+            Debug.Log(elementData.elementType);
             if (prefabDictionary.TryGetValue(elementData.elementType, out LevelElement prefab))
             {
                 LevelElement element = Instantiate(prefab, Vector3.zero, Quaternion.identity);

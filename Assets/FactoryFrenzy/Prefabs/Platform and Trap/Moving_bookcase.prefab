@@ -101,12 +101,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3927743976211133965}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19d8e348f77852545ac756e0b7cea481, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fffcea2ee3f72b4e9bca94ef7dee68f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movementDirection: {x: 1, y: 0, z: 0}
-  speed: 5
-  range: 3
+  speed: 2
+  range: 5
 --- !u!65 &8550941444013639589
 BoxCollider:
   m_ObjectHideFlags: 0

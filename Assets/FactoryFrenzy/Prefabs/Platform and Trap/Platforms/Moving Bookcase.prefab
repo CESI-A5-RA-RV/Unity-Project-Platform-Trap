@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 4527133259702933025}
   - component: {fileID: 272500025362181975}
   - component: {fileID: 8550941444013639589}
-  - component: {fileID: -7683393670563441019}
   - component: {fileID: 5874289185507358868}
+  - component: {fileID: 6426106060872247308}
   m_Layer: 0
   m_Name: Moving Bookcase
   m_TagString: Platform
@@ -114,21 +114,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.994859, y: 2.0015185, z: 0.5333406}
   m_Center: {x: 0, y: 0.9983516, z: 0}
---- !u!114 &-7683393670563441019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3927743976211133965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19d8e348f77852545ac756e0b7cea481, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movementDirection: {x: 1, y: 0, z: 0}
-  speed: 2
-  range: 5
 --- !u!114 &5874289185507358868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,3 +126,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccdf51a5e93dce04eb29c3600100675e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6426106060872247308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927743976211133965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fffcea2ee3f72b4e9bca94ef7dee68f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementDirection: {x: 1, y: 0, z: 0}
+  speed: 2
+  range: 5

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5480763768320322352}
   - component: {fileID: 849939483243502678}
   - component: {fileID: 5696731275447176486}
-  - component: {fileID: 6846858961038414745}
+  - component: {fileID: -2609416643250840693}
   m_Layer: 0
   m_Name: Tiled Moving Platform
   m_TagString: Platform
@@ -114,15 +114,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5372095518752302520}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19d8e348f77852545ac756e0b7cea481, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fffcea2ee3f72b4e9bca94ef7dee68f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementDirection: {x: 0, y: 0, z: 1}
-  speed: 5
-  range: 7
---- !u!114 &6846858961038414745
+  movementDirection: {x: 1, y: 0, z: 0}
+  speed: 2
+  range: 5
+--- !u!114 &-2609416643250840693
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,6 +131,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 5372095518752302520}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66ad59f966df85541ac9fd1ac103c2c9, type: 3}
+  m_Script: {fileID: 11500000, guid: ccdf51a5e93dce04eb29c3600100675e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
